@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ekal Seva Kendra — E-Governance Research | Jiban Niraula</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── TOKENS ───────────────────────────────────────────── */
+    :root {
+      --navy:   #0d1f33;
+      --teal:   #00a896;
+      --gold:   #f0a500;
+      --ink:    #1a1a2e;
+      --mist:   #f0f4f8;
+      --white:  #ffffff;
+      --text:   #2d3a4a;
+      --muted:  #6b7a8d;
+      --border: rgba(0,168,150,.18);
+      --card-bg:#f7fbfc;
+      --radius: 4px;
+      --ff-serif: 'Playfair Display', Georgia, serif;
+      --ff-sans:  'DM Sans', sans-serif;
+      --ff-mono:  'DM Mono', monospace;
+    }
+
+    /* ── RESET ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--ff-sans);
+      color: var(--text);
+      background: var(--white);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── SCROLL PROGRESS ─────────────────────────────────── */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      width: 0%; z-index: 1000;
+      transition: width .1s linear;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 3px; left: 0; right: 0;
+      background: rgba(13,31,51,.95);
+      backdrop-filter: blur(10px);
+      z-index: 999;
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .nav-brand {
+      font-family: var(--ff-mono);
+      font-size: .78rem;
+      color: var(--teal);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex; gap: 1.6rem; list-style: none;
+    }
+    .nav-links a {
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.6);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+
+    /* ── HERO ─────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      background: var(--navy);
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+      padding: 6rem 2rem 4rem;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,168,150,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,168,150,.07) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,168,150,.18) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative; z-index: 2;
+      text-align: center; max-width: 820px;
+    }
+    .hero-label {
+      display: inline-block;
+      font-family: var(--ff-mono);
+      font-size: .72rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      border: 1px solid rgba(0,168,150,.4);
+      padding: .3rem .9rem;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      animation: fadeUp .6s ease both;
+    }
+    .hero-title {
+      font-family: var(--ff-serif);
+      font-size: clamp(2.4rem, 6vw, 4.8rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      animation: fadeUp .7s .1s ease both;
+    }
+    .hero-title span { color: var(--teal); }
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,.55);
+      max-width: 580px;
+      margin: 0 auto 2.4rem;
+      animation: fadeUp .7s .2s ease both;
+    }
+    .hero-meta {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 1.6rem;
+      font-family: var(--ff-mono);
+      font-size: .72rem;
+      color: rgba(255,255,255,.4);
+      letter-spacing: .1em;
+      animation: fadeUp .7s .3s ease both;
+    }
+    .hero-meta span { display: flex; align-items: center; gap: .4rem; }
+    .hero-meta .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal); display: inline-block;
+    }
+    .hero-stats {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 1.6rem;
+      margin-top: 3rem;
+      animation: fadeUp .7s .4s ease both;
+    }
+    .hero-stat {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 1rem 1.8rem;
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .hero-stat strong {
+      display: block;
+      font-family: var(--ff-serif);
+      font-size: 2rem;
+      color: var(--teal);
+      line-height: 1;
+    }
+    .hero-stat em {
+      display: block;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.4);
+      font-style: normal;
+      margin-top: .3rem;
+    }
+
+    /* ── SECTIONS ─────────────────────────────────────────── */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .section-label {
+      font-family: var(--ff-mono);
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: .6rem;
+    }
+    .section-title {
+      font-family: var(--ff-serif);
+      font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .section-lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 640px;
+      margin-bottom: 3rem;
+    }
+    .divider {
+      width: 48px; height: 3px;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      border-radius: 2px;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── ABSTRACT ─────────────────────────────────────────── */
+    #abstract { background: var(--mist); }
+    .abstract-box {
+      background: var(--white);
+      border-left: 4px solid var(--teal);
+      padding: 2rem 2.4rem;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--text);
+      box-shadow: 0 2px 24px rgba(0,0,0,.05);
+    }
+    .abstract-box p + p { margin-top: 1rem; }
+    .kw-list {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+      margin-top: 1.4rem;
+    }
+    .kw {
+      font-family: var(--ff-mono);
+      font-size: .68rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      background: rgba(0,168,150,.1);
+      color: var(--teal);
+      border: 1px solid rgba(0,168,150,.3);
+      padding: .25rem .7rem;
+      border-radius: 2px;
+    }
+
+    /* ── PROBLEM / BACKGROUND ─────────────────────────────── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+    .info-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+    }
+    .info-card h3 {
+      font-family: var(--ff-serif);
+      font-size: 1.1rem;
+      color: var(--navy);
+      margin-bottom: .8rem;
+    }
+    .info-card p, .info-card li {
+      font-size: .95rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .info-card ul { padding-left: 1.2rem; }
+    .info-card li { margin-bottom: .35rem; }
+    .tag-before {
+      display: inline-block;
+      background: #fee2e2; color: #991b1b;
+      font-family: var(--ff-mono); font-size: .68rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .2rem .6rem; border-radius: 2px;
+      margin-bottom: .8rem;
+    }
+    .tag-after {
+      display: inline-block;
+      background: #d1fae5; color: #065f46;
+      font-family: var(--ff-mono); font-size: .68rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .2rem .6rem; border-radius: 2px;
+      margin-bottom: .8rem;
+    }
+
+    /* ── PROCESS FLOW ─────────────────────────────────────── */
+    #process { background: var(--navy); }
+    #process .section-title { color: var(--white); }
+    #process .section-lead { color: rgba(255,255,255,.5); }
+    #process .section-label { color: var(--teal); }
+    #process .divider { background: linear-gradient(90deg, var(--gold), var(--teal)); }
+
+    /* Animated card-to-card flow */
+    .flow-track {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* The vertical spine line */
+    .flow-track::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: rgba(0,168,150,.2);
+    }
+
+    /* Animated fill of the spine */
+    .flow-track::after {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      width: 1px;
+      height: 0%;
+      background: linear-gradient(180deg, var(--teal), var(--gold));
+      transition: height 1.4s cubic-bezier(.4,0,.2,1);
+    }
+    .flow-track.lit::after { height: 100%; }
+
+    .flow-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.4rem;
+      padding: 0 0 0 0;
+      position: relative;
+      opacity: 0;
+      transform: translateX(-18px);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .flow-row.shown { opacity: 1; transform: translateX(0); }
+
+    /* Step node on the spine */
+    .flow-node {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--navy);
+      border: 2px solid rgba(0,168,150,.35);
+      display: grid; place-items: center;
+      position: relative;
+      z-index: 2;
+      transition: border-color .3s, background .3s;
+    }
+    .flow-row.shown .flow-node {
+      border-color: var(--teal);
+      background: rgba(0,168,150,.12);
+    }
+    .flow-row:last-child.shown .flow-node {
+      border-color: var(--gold);
+      background: rgba(240,165,0,.12);
+    }
+    .flow-node-num {
+      font-family: var(--ff-mono);
+      font-size: .7rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.4);
+      transition: color .3s;
+    }
+    .flow-row.shown .flow-node-num { color: var(--teal); }
+    .flow-row:last-child.shown .flow-node-num { color: var(--gold); }
+
+    /* The card itself */
+    .flow-card {
+      flex: 1;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.4rem;
+      margin-bottom: 1rem;
+      transition: background .3s, border-color .3s;
+    }
+    .flow-row.shown .flow-card {
+      background: rgba(255,255,255,.06);
+      border-color: rgba(0,168,150,.2);
+    }
+    .flow-row:last-child.shown .flow-card {
+      border-color: rgba(240,165,0,.25);
+      background: rgba(240,165,0,.05);
+    }
+    .flow-card-title {
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: .25rem;
+    }
+    .flow-card-desc {
+      font-size: .78rem;
+      color: rgba(255,255,255,.4);
+      line-height: 1.5;
+    }
+
+    .key-transform {
+      margin-top: 2.5rem;
+      background: rgba(0,168,150,.08);
+      border: 1px solid rgba(0,168,150,.2);
+      border-left: 3px solid var(--gold);
+      padding: 1.1rem 1.5rem;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      color: rgba(255,255,255,.7);
+      font-size: .9rem;
+    }
+    .key-transform strong { color: var(--gold); }
+
+    /* ── SERVICES ─────────────────────────────────────────── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+    }
+    .service-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      background: var(--white);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .service-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 28px rgba(0,168,150,.12);
+    }
+    .service-icon {
+      width: 36px; height: 36px;
+      background: rgba(0,168,150,.12);
+      border-radius: var(--radius);
+      display: grid; place-items: center;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    .service-card h3 {
+      font-family: var(--ff-sans);
+      font-weight: 500;
+      font-size: .9rem;
+      color: var(--navy);
+      margin-bottom: .6rem;
+    }
+    .service-card ul { list-style: none; }
+    .service-card li {
+      font-size: .82rem;
+      color: var(--muted);
+      padding: .2rem 0;
+      border-bottom: 1px solid rgba(0,0,0,.05);
+    }
+    .service-card li:last-child { border: none; }
+    .service-card li::before { content: '— '; color: var(--teal); }
+
+    /* ── METRICS / OUTCOMES ───────────────────────────────── */
+    #outcomes { background: var(--mist); }
+    .metrics-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3a5c 100%);
+      border-radius: var(--radius);
+      padding: 2rem 2.4rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .metrics-hero .big-num {
+      font-family: var(--ff-serif);
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 900;
+      color: var(--teal);
+      line-height: 1;
+    }
+    .metrics-hero p {
+      color: rgba(255,255,255,.6);
+      font-size: .95rem;
+      margin-top: .6rem;
+    }
+    .metrics-hero .sub {
+      font-family: var(--ff-mono);
+      font-size: .75rem;
+      letter-spacing: .15em;
+      color: var(--gold);
+      margin-top: .4rem;
+    }
+
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .outcome-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+    }
+    .outcome-card .oc-label {
+      font-family: var(--ff-mono);
+      font-size: .68rem;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: .6rem;
+    }
+    .outcome-card p {
+      font-size: .88rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── DATA TABLE ───────────────────────────────────────── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+      margin-top: 1rem;
+    }
+    .data-table th {
+      background: var(--navy);
+      color: var(--white);
+      text-align: left;
+      padding: .75rem 1rem;
+      font-family: var(--ff-mono);
+      font-size: .72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .data-table td {
+      padding: .7rem 1rem;
+      border-bottom: 1px solid rgba(0,0,0,.07);
+      color: var(--text);
+    }
+    .data-table tr:nth-child(even) td { background: var(--mist); }
+    .data-table .positive {
+      color: #065f46;
+      font-weight: 500;
+    }
+
+    /* ── NEPAL COMPARISON ─────────────────────────────────── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .compare-card-head {
+      padding: .8rem 1.2rem;
+      font-family: var(--ff-mono);
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .compare-card-head.esk { background: var(--navy); color: var(--teal); }
+    .compare-card-head.nagarik { background: #7c3aed; color: #c4b5fd; }
+    .compare-card-body { padding: 1.2rem; }
+    .compare-row {
+      display: flex; justify-content: space-between;
+      padding: .45rem 0;
+      border-bottom: 1px solid rgba(0,0,0,.06);
+      font-size: .85rem;
+    }
+    .compare-row:last-child { border: none; }
+    .compare-row .cr-key { color: var(--muted); font-size: .8rem; }
+    .compare-row .cr-val { color: var(--navy); font-weight: 500; font-size: .85rem; }
+
+    /* ── WHAT NEPAL CAN DO ────────────────────────────────── */
+    #nepal-next { background: #080f1a; }
+    #nepal-next .section-title { color: var(--white); }
+    #nepal-next .section-lead { color: rgba(255,255,255,.5); }
+    #nepal-next .section-label { color: var(--gold); }
+    #nepal-next .divider { background: linear-gradient(90deg, var(--gold), var(--teal)); }
+
+    /* Horizontal connector flow */
+    .hflow {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      position: relative;
+    }
+    @media (max-width: 720px) {
+      .hflow { flex-direction: column; }
+      .hflow-connector { flex-direction: row; width: auto; height: 40px; align-items: center; justify-content: center; }
+      .hflow-line { width: 40px; height: 1px; }
+      .hflow-arrow { transform: rotate(90deg); }
+    }
+
+    .hflow-card {
+      flex: 1;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      padding: 1.8rem 1.6rem;
+      position: relative;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .5s ease, transform .5s ease, border-color .4s, background .4s;
+    }
+    .hflow-card.hlit {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .hflow-card[data-color="teal"] {
+      background: rgba(0,168,150,.0);
+      border-top: 2px solid rgba(0,168,150,.5);
+    }
+    .hflow-card[data-color="gold"] {
+      background: rgba(240,165,0,.0);
+      border-top: 2px solid rgba(240,165,0,.5);
+    }
+    .hflow-card[data-color="purple"] {
+      background: rgba(167,139,250,.0);
+      border-top: 2px solid rgba(167,139,250,.5);
+    }
+    .hflow-card.hlit[data-color="teal"]   { background: rgba(0,168,150,.06); }
+    .hflow-card.hlit[data-color="gold"]   { background: rgba(240,165,0,.06); }
+    .hflow-card.hlit[data-color="purple"] { background: rgba(167,139,250,.06); }
+
+    .hflow-tag {
+      font-family: var(--ff-mono);
+      font-size: .62rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      margin-bottom: .8rem;
+    }
+    [data-color="teal"]   .hflow-tag { color: var(--teal); }
+    [data-color="gold"]   .hflow-tag { color: var(--gold); }
+    [data-color="purple"] .hflow-tag { color: #a78bfa; }
+
+    .hflow-card h3 {
+      font-family: var(--ff-sans);
+      font-size: .95rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: .9rem;
+    }
+    .hflow-card ul { list-style: none; }
+    .hflow-card li {
+      font-size: .8rem;
+      color: rgba(255,255,255,.45);
+      padding: .28rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      line-height: 1.4;
+    }
+    .hflow-card li:last-child { border: none; }
+    .hflow-card li::before { content: '– '; color: rgba(255,255,255,.2); }
+
+    /* The animated connector between cards */
+    .hflow-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      flex-shrink: 0;
+      gap: 4px;
+    }
+    .hflow-line {
+      flex: 1;
+      width: 1px;
+      background: rgba(255,255,255,.07);
+      position: relative;
+      overflow: hidden;
+    }
+    .hflow-line::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 0%;
+      background: linear-gradient(180deg, var(--teal), var(--gold));
+      transition: height .7s cubic-bezier(.4,0,.2,1);
+    }
+    .hflow-line.lit::after { height: 100%; }
+
+    /* Arrow bead */
+    .hflow-arrow {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.12);
+      display: grid; place-items: center;
+      font-size: .75rem;
+      color: rgba(255,255,255,.2);
+      flex-shrink: 0;
+      transition: border-color .4s, color .4s, background .4s;
+    }
+    .hflow-line.lit ~ .hflow-arrow {
+      border-color: var(--teal);
+      color: var(--teal);
+      background: rgba(0,168,150,.1);
+    }
+
+    /* ── LESSONS ──────────────────────────────────────────── */
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.2rem;
+    }
+    .lesson-card {
+      display: flex; gap: 1rem;
+      align-items: flex-start;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem;
+      transition: box-shadow .2s;
+    }
+    .lesson-card:hover { box-shadow: 0 6px 24px rgba(0,168,150,.1); }
+    .lesson-num {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      background: var(--teal);
+      color: var(--navy);
+      border-radius: var(--radius);
+      display: grid; place-items: center;
+      font-family: var(--ff-serif);
+      font-weight: 700;
+      font-size: .95rem;
+    }
+    .lesson-card h3 {
+      font-size: .9rem;
+      font-weight: 500;
+      color: var(--navy);
+      margin-bottom: .4rem;
+    }
+    .lesson-card p {
+      font-size: .83rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── CONCLUSION ───────────────────────────────────────── */
+    #conclusion { background: var(--mist); }
+    .pullquote {
+      border-left: 5px solid var(--gold);
+      margin: 2rem 0;
+      padding: 1.4rem 1.8rem;
+      background: var(--white);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-family: var(--ff-serif);
+      font-size: 1.2rem;
+      font-style: italic;
+      color: var(--navy);
+      line-height: 1.5;
+    }
+    .conclusion-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .conclusion-item {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 1rem 1.2rem;
+      font-size: .87rem;
+      color: var(--text);
+    }
+    .conclusion-item strong {
+      display: block; font-size: .78rem;
+      text-transform: uppercase; letter-spacing: .1em;
+      color: var(--teal); font-family: var(--ff-mono);
+      margin-bottom: .4rem;
+    }
+
+    /* ── REFERENCES ───────────────────────────────────────── */
+    #references { background: var(--navy); }
+    #references .section-title { color: var(--white); }
+    #references .section-lead { color: rgba(255,255,255,.45); }
+    #references .section-label { color: var(--teal); }
+    #references .divider { background: linear-gradient(90deg, var(--teal), var(--gold)); }
+
+    .ref-group { margin-bottom: 2rem; }
+    .ref-group-title {
+      font-family: var(--ff-mono);
+      font-size: .7rem;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border-bottom: 1px solid rgba(240,165,0,.2);
+      padding-bottom: .5rem;
+      margin-bottom: 1rem;
+    }
+    .ref-item {
+      display: flex; gap: .8rem;
+      margin-bottom: .7rem;
+      font-size: .85rem;
+      color: rgba(255,255,255,.55);
+      line-height: 1.6;
+    }
+    .ref-bullet {
+      flex-shrink: 0;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--teal);
+      margin-top: .6rem;
+    }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    footer {
+      background: #060f1a;
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+    footer p {
+      font-size: .8rem;
+      color: rgba(255,255,255,.3);
+      line-height: 1.8;
+    }
+    footer .footer-name {
+      font-family: var(--ff-serif);
+      font-style: italic;
+      color: var(--teal);
+    }
+    footer .footer-sep { margin: 0 .5rem; opacity: .3; }
+
+    /* ── ANIMATIONS ──────────────────────────────────────────*/
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div id="progress-bar"></div>
+
+<!-- Navigation -->
+<nav>
+  <span class="nav-brand">ESK · Research 2026</span>
+  <ul class="nav-links">
+    <li><a href="#abstract">Abstract</a></li>
+    <li><a href="#background">Background</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#nepal">Nepal</a></li>
+    <li><a href="#lessons">Lessons</a></li>
+    <li><a href="#references">References</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <span class="hero-label">E-Governance Case Study · BCA 7th Semester</span>
+    <h1 class="hero-title">
+      Ekal Seva Kendra<br />
+      <span>Single-Window Citizen<br />Service Delivery</span>
+    </h1>
+    <p class="hero-subtitle">
+      A research analysis of Haryana's citizen-centric e-governance model, its measurable outcomes,
+      and what Nepal can learn from it.
+    </p>
+    <div class="hero-meta">
+      <span><span class="dot"></span> Jiban Niraula</span>
+      <span><span class="dot"></span> Vishwa Adarsha College, Itahari</span>
+      <span><span class="dot"></span> May 2026</span>
+      <span><span class="dot"></span> Haryana, India · Nepal Context</span>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <strong>117</strong>
+        <em>Active ESK Centers</em>
+      </div>
+      <div class="hero-stat">
+        <strong>49,627</strong>
+        <em>Certs — March 2015</em>
+      </div>
+      <div class="hero-stat">
+        <strong>100%</strong>
+        <em>Rural Rollout</em>
+      </div>
+      <div class="hero-stat">
+        <strong>1,159</strong>
+        <em>Rural CSCs Planned</em>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABSTRACT ─────────────────────────────────────────────── -->
+<section id="abstract">
+  <div class="container">
+    <div class="section-label">Abstract</div>
+    <div class="divider"></div>
+    <h2 class="section-title">Research Overview</h2>
+    <div class="abstract-box reveal">
+      <p>
+        This research examines <strong>Ekal Seva Kendra (ESK)</strong> — literally "Single Service Center" — a transformative 
+        e-governance initiative implemented in Haryana, India, under the National e-Governance Plan (NeGP). ESK 
+        consolidated fragmented government service delivery into a unified, citizen-centric single-window model, 
+        fundamentally reengineering how public services are accessed, processed, and delivered.
+      </p>
+      <p>
+        The study analyzes ESK's design philosophy, operational process flow, implementation scale, and measurable 
+        outcomes across dimensions of efficiency, corruption reduction, time savings, financial sustainability, 
+        and employment creation. It further draws a comparative analysis with Nepal's emerging e-governance 
+        infrastructure — particularly the Nagarik App — to identify lessons and policy recommendations for 
+        inclusive digital governance in Nepal's context.
+      </p>
+      <p>
+        The central finding is that ESK's success was not the result of digitizing existing processes, but 
+        rather a fundamental <em>redesign of governance around the citizen</em> — a distinction that carries 
+        significant implications for countries like Nepal currently building digital public infrastructure.
+      </p>
+      <div class="kw-list">
+        <span class="kw">E-Governance</span>
+        <span class="kw">Single-Window Model</span>
+        <span class="kw">Ekal Seva Kendra</span>
+        <span class="kw">Haryana</span>
+        <span class="kw">NeGP</span>
+        <span class="kw">Nepal Nagarik App</span>
+        <span class="kw">Digital Public Services</span>
+        <span class="kw">Citizen-Centric Governance</span>
+        <span class="kw">Anti-Corruption</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BACKGROUND ────────────────────────────────────────────── -->
+<section id="background">
+  <div class="container">
+    <div class="section-label">Section 01 — Introduction &amp; Background</div>
+    <div class="divider"></div>
+    <h2 class="section-title">The Problem ESK Was Built to Solve</h2>
+    <p class="section-lead">
+      Before ESK, citizens navigating government services in Haryana faced a fragmented, opaque, and 
+      time-consuming bureaucratic system that favoured intermediaries over citizens.
+    </p>
+
+    <div class="two-col reveal">
+      <div class="info-card">
+        <span class="tag-before">Before ESK</span>
+        <h3>Department-Centric Model</h3>
+        <ul>
+          <li>Multiple separate offices for different services</li>
+          <li>Repeated paperwork and form submissions per department</li>
+          <li>Long queues and unpredictable waiting times</li>
+          <li>High dependence on middlemen (touts/agents)</li>
+          <li>No transparency in application status</li>
+          <li>High transaction cost in time, money, and effort for citizens</li>
+          <li>Physical file movement prone to loss, manipulation, and delay</li>
+        </ul>
+      </div>
+      <div class="info-card">
+        <span class="tag-after">After ESK</span>
+        <h3>Citizen-Centric Single-Window</h3>
+        <ul>
+          <li>One center — one submission — one process</li>
+          <li>Digital routing to relevant departments</li>
+          <li>Time-bound delivery with predictable timelines</li>
+          <li>No intermediaries; direct government-to-citizen flow</li>
+          <li>Trackable applications and digital audit logs</li>
+          <li>Reduced friction and cost for all citizens</li>
+          <li>Physical file movement replaced by digital workflow</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem;" class="reveal">
+      <div class="info-card">
+        <h3>Origin &amp; Policy Context</h3>
+        <p>
+          ESK was introduced in <strong>Haryana, India</strong> as part of India's <strong>National e-Governance Plan (NeGP)</strong> — 
+          a national initiative to modernize government service delivery through digital infrastructure. 
+          In Haryana, this manifested through the <strong>e-DISHA</strong> network and the broader 
+          <strong>Common Service Centre (CSC)</strong> framework under CSC e-Governance Services India Ltd.
+        </p>
+        <p style="margin-top:.8rem;">
+          The ESK model represents a <em>G2C (Government-to-Citizen)</em> e-governance approach — 
+          where the government adapts its systems to serve citizens rather than requiring citizens 
+          to navigate complex bureaucratic structures.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ──────────────────────────────────────────────── -->
+<section id="services" style="background:var(--mist);">
+  <div class="container">
+    <div class="section-label">Section 02 — Core Features &amp; Services</div>
+    <div class="divider"></div>
+    <h2 class="section-title">What ESK Offers</h2>
+    <p class="section-lead">
+      ESK integrates services from multiple government departments into a single access point, 
+      covering four major service categories.
+    </p>
+
+    <div class="services-grid reveal">
+      <div class="service-card">
+        <div class="service-icon">📋</div>
+        <h3>Administrative Services</h3>
+        <ul>
+          <li>Birth &amp; Death Certificates</li>
+          <li>Residence Certificate</li>
+          <li>Income Certificate</li>
+          <li>Caste Certificate</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏛️</div>
+        <h3>Revenue &amp; Land Records</h3>
+        <ul>
+          <li>Land Record Copies</li>
+          <li>Revenue Documents</li>
+          <li>Property Records</li>
+          <li>Mutation Status</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🚗</div>
+        <h3>Transport Services</h3>
+        <ul>
+          <li>Driving License</li>
+          <li>Learner's License</li>
+          <li>Vehicle Registration</li>
+          <li>RC &amp; Permit Status</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <h3>Utility &amp; Public Services</h3>
+        <ul>
+          <li>Bill Payments</li>
+          <li>Application Forms</li>
+          <li>Application Status Tracking</li>
+          <li>Grievance Redressal</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;" class="reveal">
+      <div class="info-card">
+        <h3>Key Design Principles</h3>
+        <p>ESK was built on five core design principles that differentiate it from ordinary digitization efforts:</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem;">
+          <span class="kw">Single-Window Digital Integration</span>
+          <span class="kw">Standardized Workflow</span>
+          <span class="kw">Reduced Corruption</span>
+          <span class="kw">Rural Inclusion</span>
+          <span class="kw">Time-Bound Delivery</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROCESS FLOW ──────────────────────────────────────────── -->
+<section id="process">
+  <div class="container">
+    <div class="section-label">Section 02 — Service Delivery Process</div>
+    <div class="divider"></div>
+    <h2 class="section-title">How ESK Works — Process Flow</h2>
+    <p class="section-lead">
+      The 7-step ESK process replaces multi-office, multi-visit bureaucracy with 
+      a streamlined digital workflow — citizen comes once, and the system does the rest.
+    </p>
+
+    <div class="flow-track" id="flowTrack">
+      <div class="flow-row">
+        <div class="flow-node"><span class="flow-node-num">01</span></div>
+        <div class="flow-card">
+          <div class="flow-card-title">Citizen Visits ESK</div>
+          <div class="flow-card-desc">Arrives at a single ESK center — one location for all services.</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node"><span class="flow-node-num">02</span></div>
+        <div class="flow-card">
+          <div class="flow-card-title">Submits Application</div>
+          <div class="flow-card-desc">One standardized form, one submission — no department-hopping.</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node"><span class="flow-node-num">03</span></div>
+        <div class="flow-card">
+          <div class="flow-card-title">Staff Digitizes</div>
+          <div class="flow-card-desc">Trained operator enters data into the integrated system; paper ends here.</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node"><span class="flow-node-num">04</span></div>
+        <div class="flow-card">
+          <div class="flow-card-title">System Routes</div>
+          <div class="flow-card-desc">Application directed digitally to the relevant department — no physical file movement.</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node"><span class="flow-node-num">05</span></div>
+        <div class="flow-card">
+          <div class="flow-card-title">Department Processes</div>
+          <div class="flow-card-desc">Internal approval and verification within a defined, time-bound window.</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node"><span class="flow-node-num">06</span></div>
+        <div class="flow-card">
+          <div class="flow-card-title">Output Returned</div>
+          <div class="flow-card-desc">Completed output routed back through the same ESK center digitally.</div>
+        </div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-node"><span class="flow-node-num">07</span></div>
+        <div class="flow-card">
+          <div class="flow-card-title">Citizen Receives Service</div>
+          <div class="flow-card-desc">Certificate or document delivered. One visit, fully resolved.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="key-transform reveal">
+      <strong>Key Transformation:</strong> Physical file movement was replaced by digital workflow movement — 
+      reducing delays, errors, and opportunities for corruption. Citizens no longer chase files across 
+      departments; the system moves instead.
+    </div>
+  </div>
+</section>
+
+<!-- ── IMPLEMENTATION SCALE ──────────────────────────────────── -->
+<section id="scale">
+  <div class="container">
+    <div class="section-label">Section 03 — Implementation Scale</div>
+    <div class="divider"></div>
+    <h2 class="section-title">Not a Pilot. A State-Wide Infrastructure.</h2>
+    <p class="section-lead">
+      ESK scaled across all districts of Haryana — achieving full rural coverage and becoming 
+      the standard public service delivery infrastructure for the entire state.
+    </p>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-bottom:2rem;" class="reveal">
+      <div class="info-card" style="text-align:center; background:var(--navy); border-color:rgba(0,168,150,.3);">
+        <div style="font-family:var(--ff-serif);font-size:3rem;font-weight:900;color:var(--teal);line-height:1;">117</div>
+        <div style="font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:.4rem;">Active ESK / e-DISHA Centers</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.2rem;">by 2015</div>
+      </div>
+      <div class="info-card" style="text-align:center; background:var(--navy); border-color:rgba(0,168,150,.3);">
+        <div style="font-family:var(--ff-serif);font-size:3rem;font-weight:900;color:var(--teal);line-height:1;">1,159</div>
+        <div style="font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:.4rem;">Rural CSCs Planned</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.2rem;">in the network</div>
+      </div>
+      <div class="info-card" style="text-align:center; background:var(--navy); border-color:rgba(0,168,150,.3);">
+        <div style="font-family:var(--ff-serif);font-size:3rem;font-weight:900;color:var(--teal);line-height:1;">100%</div>
+        <div style="font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:.4rem;">Rural Rollout Coverage</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.2rem;">all rural districts</div>
+      </div>
+      <div class="info-card" style="text-align:center; background:var(--navy); border-color:rgba(0,168,150,.3);">
+        <div style="font-family:var(--ff-serif);font-size:3rem;font-weight:900;color:var(--gold);line-height:1;">67%+</div>
+        <div style="font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:.4rem;">Urban Rollout Coverage</div>
+        <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.2rem;">and expanding</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── OUTCOMES ───────────────────────────────────────────────── -->
+<section id="outcomes">
+  <div class="container">
+    <div class="section-label">Section 04 — Outcomes &amp; Impact</div>
+    <div class="divider"></div>
+    <h2 class="section-title">What ESK Achieved</h2>
+    <p class="section-lead">
+      The results were measurable, documented, and significant across multiple dimensions 
+      of governance quality and citizen experience.
+    </p>
+
+    <div class="metrics-hero reveal">
+      <div class="big-num">49,627</div>
+      <p>Certificates issued electronically in March 2015 alone</p>
+      <div class="sub">≈ 1,600+ per day &nbsp;·&nbsp; 67+ per hour</div>
+    </div>
+
+    <div class="outcomes-grid reveal">
+      <div class="outcome-card">
+        <div class="oc-label">⚡ Efficiency</div>
+        <p>Services became electronically issued. Paper dependency and repeated paperwork reduced significantly across all service categories.</p>
+      </div>
+      <div class="outcome-card">
+        <div class="oc-label">⏱ Time</div>
+        <p>Workflows became time-bound. Many services delivered the same day with predictable digital routing — no more indefinite waiting.</p>
+      </div>
+      <div class="outcome-card">
+        <div class="oc-label">🔒 Corruption</div>
+        <p>Middlemen dependence reduced. Digital logs and fixed counters limited administrative discretion and opportunities for manipulation.</p>
+      </div>
+      <div class="outcome-card">
+        <div class="oc-label">💰 Finance</div>
+        <p>Self-sustaining through service fees. Low recurring dependency on government budget made the model replicable and scalable.</p>
+      </div>
+      <div class="outcome-card">
+        <div class="oc-label">👥 Employment</div>
+        <p>Created local ICT-based jobs at the district level — service operators, data entry roles, and digital support positions.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:2.5rem;" class="reveal">
+      <div class="section-label" style="margin-bottom:.8rem;">Summary Data Table</div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Indicator</th>
+            <th>Outcome After Implementation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Operational centers</td><td class="positive">117 active ESK / e-DISHA centers</td></tr>
+          <tr><td>Rural CSC network</td><td class="positive">1,159 planned</td></tr>
+          <tr><td>Rural rollout</td><td class="positive">100% coverage</td></tr>
+          <tr><td>Urban rollout</td><td class="positive">67%+ coverage</td></tr>
+          <tr><td>Certificates issued</td><td class="positive">49,627 (March 2015 alone)</td></tr>
+          <tr><td>Daily output</td><td class="positive">1,600+ certificates per day</td></tr>
+          <tr><td>Service speed</td><td class="positive">Faster — time-bound workflows</td></tr>
+          <tr><td>Corruption</td><td class="positive">Reduced middlemen dependence</td></tr>
+          <tr><td>Cost model</td><td class="positive">Self-sustaining via service fees</td></tr>
+          <tr><td>Employment</td><td class="positive">Local ICT jobs created</td></tr>
+          <tr><td>Citizen experience</td><td class="positive">Improved transparency &amp; convenience</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:.75rem;color:var(--muted);margin-top:.6rem;">
+        Source: Government of Haryana — e-DISHA and ESK Implementation Reports (2013–2015). Statistical data as of March 2015.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── NEPAL RELEVANCE ────────────────────────────────────────── -->
+<section id="nepal" style="background:var(--mist);">
+  <div class="container">
+    <div class="section-label">Section 05 — Nepal Relevance</div>
+    <div class="divider"></div>
+    <h2 class="section-title">ESK vs. Nepal's Nagarik App</h2>
+    <p class="section-lead">
+      Nepal has taken meaningful steps toward e-governance with the Nagarik App. But a significant 
+      gap remains in reaching rural, elderly, and digitally excluded citizens.
+    </p>
+
+    <div class="compare-grid reveal">
+      <div class="compare-card">
+        <div class="compare-card-head esk">ESK — Haryana, India</div>
+        <div class="compare-card-body">
+          <div class="compare-row"><span class="cr-key">Type</span><span class="cr-val">Physical + Digital</span></div>
+          <div class="compare-row"><span class="cr-key">Access</span><span class="cr-val">Walk-in center</span></div>
+          <div class="compare-row"><span class="cr-key">Assistance</span><span class="cr-val">Staff-assisted</span></div>
+          <div class="compare-row"><span class="cr-key">Rural reach</span><span class="cr-val">Physical centers (100%)</span></div>
+          <div class="compare-row"><span class="cr-key">Delivery</span><span class="cr-val">In-person pickup</span></div>
+          <div class="compare-row"><span class="cr-key">Literacy req.</span><span class="cr-val">None — staff handles it</span></div>
+          <div class="compare-row"><span class="cr-key">Internet req.</span><span class="cr-val">Backend only</span></div>
+        </div>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card-head nagarik">Nagarik App — Nepal</div>
+        <div class="compare-card-body">
+          <div class="compare-row"><span class="cr-key">Type</span><span class="cr-val">Mobile-First Digital</span></div>
+          <div class="compare-row"><span class="cr-key">Access</span><span class="cr-val">Smartphone App</span></div>
+          <div class="compare-row"><span class="cr-key">Assistance</span><span class="cr-val">Self-service</span></div>
+          <div class="compare-row"><span class="cr-key">Rural reach</span><span class="cr-val">Internet required</span></div>
+          <div class="compare-row"><span class="cr-key">Delivery</span><span class="cr-val">Digital output</span></div>
+          <div class="compare-row"><span class="cr-key">Literacy req.</span><span class="cr-val">Digital literacy needed</span></div>
+          <div class="compare-row"><span class="cr-key">Internet req.</span><span class="cr-val">Required by citizen</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:2rem;" class="reveal">
+      <div class="info-card" style="background:var(--white);">
+        <h3>Nepal's E-Governance Today</h3>
+        <p>Nepal's current e-governance landscape includes several meaningful services through the Nagarik App:</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.8rem;">
+          <span class="kw">National ID Integration</span>
+          <span class="kw">Online Police Clearance</span>
+          <span class="kw">PAN &amp; Tax Registration</span>
+          <span class="kw">Digital Transport Services</span>
+          <span class="kw">Passport Linkage</span>
+          <span class="kw">Voter Card Integration</span>
+        </div>
+        <p style="margin-top:1rem; font-size:.9rem; color:#991b1b; background:#fee2e2; padding:.8rem 1rem; border-radius:var(--radius);">
+          <strong>Gap:</strong> Nepal has the platform (Nagarik App) but lacks enough assisted one-window 
+          physical centers for rural and low-literacy citizens. The platform assumes digital access 
+          and literacy that much of Nepal's population does not yet have.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT NEPAL CAN DO NEXT ─────────────────────────────────── -->
+<section id="nepal-next">
+  <div class="container">
+    <div class="section-label">Section 05–06 — Policy Recommendation</div>
+    <div class="divider"></div>
+    <h2 class="section-title">What Nepal Can Do Next</h2>
+    <p class="section-lead">
+      A hybrid model combining Nepal's existing digital platform with ESK-style physical 
+      assisted centers would deliver truly inclusive e-governance.
+    </p>
+
+    <div class="hflow" id="hflow">
+      <div class="hflow-card" data-color="teal" data-hdelay="0">
+        <div class="hflow-tag">Already exists · Digital Layer</div>
+        <h3>Nagarik App</h3>
+        <ul>
+          <li>PAN registration</li>
+          <li>Police clearance</li>
+          <li>Passport linkage</li>
+          <li>Voting services</li>
+          <li>Transport services</li>
+        </ul>
+      </div>
+
+      <div class="hflow-connector" id="hconn1">
+        <div class="hflow-line" id="hline1"></div>
+        <div class="hflow-arrow">›</div>
+        <div class="hflow-line"></div>
+      </div>
+
+      <div class="hflow-card" data-color="gold" data-hdelay="300">
+        <div class="hflow-tag">New infrastructure needed</div>
+        <h3>Local One-Window Help Centers</h3>
+        <ul>
+          <li>Assisted submission</li>
+          <li>Staff support for elderly &amp; rural</li>
+          <li>Physical document collection</li>
+          <li>Trained local operators</li>
+        </ul>
+      </div>
+
+      <div class="hflow-connector" id="hconn2">
+        <div class="hflow-line" id="hline2"></div>
+        <div class="hflow-arrow">›</div>
+        <div class="hflow-line"></div>
+      </div>
+
+      <div class="hflow-card" data-color="purple" data-hdelay="600">
+        <div class="hflow-tag">Shared digital infrastructure</div>
+        <h3>Unified Backend System</h3>
+        <ul>
+          <li>Digital routing to departments</li>
+          <li>Unified national database</li>
+          <li>Trackable workflow</li>
+          <li>MIS reporting &amp; analytics</li>
+        </ul>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:1.8rem;font-size:.88rem;color:rgba(255,255,255,.45);font-style:italic;" class="reveal">
+      Nepal has the platform. The next step is to build the delivery structure — 
+      especially for rural, elderly, and digitally excluded citizens.
+    </p>
+  </div>
+</section>
+
+<!-- ── LESSONS LEARNED ───────────────────────────────────────── -->
+<section id="lessons">
+  <div class="container">
+    <div class="section-label">Section 06 — Lessons Learned</div>
+    <div class="divider"></div>
+    <h2 class="section-title">Six Lessons from the ESK Model</h2>
+    <p class="section-lead">
+      Beyond its data, ESK offers a set of transferable principles for any government 
+      attempting to modernize citizen service delivery.
+    </p>
+
+    <div class="lessons-grid reveal">
+      <div class="lesson-card">
+        <div class="lesson-num">1</div>
+        <div>
+          <h3>Redesign, Not Just Digitize</h3>
+          <p>ESK's success was not simply digitizing existing forms. It re-engineered service delivery around the citizen rather than the department. The form changed; so did the logic.</p>
+        </div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">2</div>
+        <div>
+          <h3>Assisted Access Matters</h3>
+          <p>Low digital literacy and rural geography require physical centers with trained staff. Technology alone cannot bridge the access gap — the human interface remains critical.</p>
+        </div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">3</div>
+        <div>
+          <h3>Integration Creates Value</h3>
+          <p>Connecting multiple departments into one backend system multiplies efficiency gains and reduces citizen burden exponentially. Silos kill the single-window promise.</p>
+        </div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">4</div>
+        <div>
+          <h3>Accountability Through Digitization</h3>
+          <p>Digital logs, trackable workflows, and standardized processes reduced discretion and created automatic accountability mechanisms that deter corrupt behavior.</p>
+        </div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">5</div>
+        <div>
+          <h3>Scale for Real Impact</h3>
+          <p>ESK worked because it scaled to 117+ centers covering 100% of rural Haryana. Partial rollouts fail to deliver systemic change — coverage is not optional, it is the point.</p>
+        </div>
+      </div>
+      <div class="lesson-card">
+        <div class="lesson-num">6</div>
+        <div>
+          <h3>Self-Sustainability Ensures Longevity</h3>
+          <p>The service-fee model reduced dependence on recurring government funding, making the system financially viable and replicable across other states and countries.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONCLUSION ─────────────────────────────────────────────── -->
+<section id="conclusion">
+  <div class="container">
+    <div class="section-label">Section 07 — Conclusion</div>
+    <div class="divider"></div>
+    <h2 class="section-title">The Bigger Picture</h2>
+    <p class="section-lead">
+      ESK represents more than an IT project — it represents a philosophy of governance 
+      that places citizens at the center of public service design.
+    </p>
+
+    <div class="pullquote reveal">
+      "Ekal Seva Kendra proved that successful e-governance is not just about digitizing government. 
+       It is about redesigning governance around citizens."
+    </div>
+
+    <div class="conclusion-list reveal">
+      <div class="conclusion-item">
+        <strong>Fewer Touchpoints</strong>
+        Citizens visit once — not many offices across the city.
+      </div>
+      <div class="conclusion-item">
+        <strong>Faster Delivery</strong>
+        Time-bound, predictable digital workflows replaced indefinite waits.
+      </div>
+      <div class="conclusion-item">
+        <strong>Lower Citizen Cost</strong>
+        Reduced effort, no middlemen, no repeated paperwork.
+      </div>
+      <div class="conclusion-item">
+        <strong>Reduced Corruption</strong>
+        Digital logs and fixed counters create automatic accountability.
+      </div>
+      <div class="conclusion-item">
+        <strong>Improved Transparency</strong>
+        Trackable applications restore citizen trust in public institutions.
+      </div>
+    </div>
+
+    <div style="margin-top:2.5rem;" class="reveal">
+      <div class="info-card" style="background:linear-gradient(135deg,var(--navy),#1a3a5c);border:none;text-align:center;padding:2rem 2.4rem;">
+        <div style="font-family:var(--ff-serif);font-size:1.1rem;color:var(--white);margin-bottom:.8rem;">Nepal's Path Forward</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;font-size:.9rem;color:rgba(255,255,255,.7);">
+          <span style="color:var(--teal);">ESK's Assisted Single-Window Model</span>
+          <span style="color:rgba(255,255,255,.4);">+</span>
+          <span style="color:var(--gold);">Nepal's Nagarik App Platform</span>
+          <span style="color:rgba(255,255,255,.4);">=</span>
+          <span style="color:var(--white);font-weight:500;">Inclusive, Scalable E-Governance for All Citizens</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── REFERENCES ─────────────────────────────────────────────── -->
+<section id="references">
+  <div class="container">
+    <div class="section-label">Section 08 — References</div>
+    <div class="divider"></div>
+    <h2 class="section-title">Sources &amp; Further Reading</h2>
+    <p class="section-lead">
+      This research draws on government implementation reports, academic policy literature, 
+      and Nepal-specific e-governance documentation.
+    </p>
+
+    <div class="ref-group reveal">
+      <div class="ref-group-title">Government Sources</div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>Government of Haryana — e-DISHA and ESK Implementation Reports (2013–2015). Haryana: Department of Electronics &amp; Information Technology.</div></div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>Ministry of Electronics &amp; Information Technology, India — National e-Governance Plan (NeGP) Documentation. New Delhi: MeitY, Government of India.</div></div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>Common Service Centres Scheme — CSC e-Governance Services India Ltd. Operational Framework and Coverage Reports.</div></div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>Government of Nepal — Nagarik App Official Documentation and Service Portal. Kathmandu: Ministry of Communication and Information Technology.</div></div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>Nepal Telecommunication Authority — ICT Development Annual Reports. Kathmandu: NTA.</div></div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>Ministry of Federal Affairs, Nepal — Digital Local Governance Reform Initiatives. Kathmandu: Government of Nepal.</div></div>
+    </div>
+
+    <div class="ref-group reveal">
+      <div class="ref-group-title">Academic &amp; Policy Sources</div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>World Bank — Digital Government and Citizen Services in South Asia. Washington D.C.: World Bank Group, Digital Development Global Practice.</div></div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>UNDP — e-Governance Readiness and Public Service Delivery Models. New York: United Nations Development Programme.</div></div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>Saxena, K.B.C. — "Towards Excellence in E-Governance." International Journal of Public Sector Management, Vol. 18, No. 6 (2005), pp. 498–513.</div></div>
+    </div>
+
+    <div class="ref-group reveal">
+      <div class="ref-group-title">Data Note</div>
+      <div class="ref-item"><div class="ref-bullet"></div><div>Statistical data (center counts, certificate volumes, rollout percentages) are sourced from official Haryana government implementation reports. Primary data reference date: March 2015 (Haryana ESK rollout metrics). All figures cited are from documented government records.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer>
+  <p>
+    <span class="footer-name">Jiban Niraula</span>
+    <span class="footer-sep">·</span>
+    BCA 7th Semester
+    <span class="footer-sep">·</span>
+    Vishwa Adarsha College, Itahari, Sunsari
+    <span class="footer-sep">·</span>
+    May 2026
+  </p>
+  <p style="margin-top:.4rem;">
+    Ekal Seva Kendra — E-Governance Case Study Research
+    <span class="footer-sep">·</span>
+    Haryana, India &amp; Nepal Context
+  </p>
+  <p style="margin-top:.8rem; font-size:.72rem; opacity:.4;">
+    "Nepal has already begun that journey digitally. The next step is to make it accessible for everyone."
+  </p>
+</footer>
+
+<script>
+  // ── SCROLL PROGRESS ────────────────────────────────────
+  const bar = document.getElementById('progress-bar');
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = pct + '%';
+  }, { passive: true });
+
+  // ── GENERIC REVEAL ─────────────────────────────────────
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  // ── VERTICAL PROCESS FLOW ──────────────────────────────
+  // Trigger: when the track enters viewport, stagger each row
+  const flowTrack = document.getElementById('flowTrack');
+  if (flowTrack) {
+    const flowRows = flowTrack.querySelectorAll('.flow-row');
+    const flowObs = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      // Light up the spine line
+      flowTrack.classList.add('lit');
+      // Stagger each card
+      flowRows.forEach((row, i) => {
+        setTimeout(() => row.classList.add('shown'), i * 130);
+      });
+      flowObs.disconnect();
+    }, { threshold: 0.15 });
+    flowObs.observe(flowTrack);
+  }
+
+  // ── HORIZONTAL NEPAL FLOW ──────────────────────────────
+  const hflow = document.getElementById('hflow');
+  if (hflow) {
+    const hCards = hflow.querySelectorAll('.hflow-card');
+    const hLine1 = document.getElementById('hline1');
+    const hLine2 = document.getElementById('hline2');
+
+    const hObs = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+
+      // Card 1 immediately
+      hCards[0] && setTimeout(() => hCards[0].classList.add('hlit'), 0);
+      // Line 1 after card 1 appears
+      hLine1 && setTimeout(() => hLine1.classList.add('lit'), 300);
+      // Card 2
+      hCards[1] && setTimeout(() => hCards[1].classList.add('hlit'), 600);
+      // Line 2
+      hLine2 && setTimeout(() => hLine2.classList.add('lit'), 900);
+      // Card 3
+      hCards[2] && setTimeout(() => hCards[2].classList.add('hlit'), 1200);
+
+      hObs.disconnect();
+    }, { threshold: 0.2 });
+    hObs.observe(hflow);
+  }
+
+  // ── ACTIVE NAV ─────────────────────────────────────────
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current
+        ? 'var(--teal)' : 'rgba(255,255,255,.6)';
+    });
+  }, { passive: true });
+</script>
+
+</body>
+</html>

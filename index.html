@@ -1,927 +1,623 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ekal Seva Kendra — E-Governance Case Study</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    /* ── RESET & BASE ── */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --navy:       #0F1F33;
-      --navy2:      #1A2E4A;
-      --teal:       #0D7A8A;
-      --teal-light: #14A3B8;
-      --teal-pale:  #D4EFF3;
-      --gold:       #D4A017;
-      --white:      #FFFFFF;
-      --off-white:  #F4F8FA;
-      --gray:       #5A6B7A;
-      --gray-light: #BDD0D8;
-      --text:       #1A2E4A;
-    }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--navy);
-      color: var(--white);
-      overflow-x: hidden;
-      cursor: default;
-    }
-
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--navy); }
-    ::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 2px; }
-
-    /* ── PROGRESS BAR ── */
-    #progress-bar {
-      position: fixed; top: 0; left: 0; height: 3px;
-      background: linear-gradient(90deg, var(--teal), var(--gold));
-      width: 0%; z-index: 9999; transition: width 0.1s linear;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 1.1rem 2.5rem;
-      background: rgba(15,31,51,0.85);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid rgba(13,122,138,0.2);
-      transition: all 0.3s ease;
-    }
-    nav.scrolled { padding: 0.75rem 2.5rem; }
-    .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--teal-light); letter-spacing: 0.02em; }
-    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
-    .nav-links a {
-      font-size: 0.8rem; font-weight: 500; color: var(--gray-light);
-      text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--teal-light); }
-    .nav-slide-indicator {
-      font-family: 'DM Mono', monospace; font-size: 0.75rem;
-      color: var(--teal); opacity: 0.7;
-    }
-
-    /* ── HERO ── */
-    #hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: center; align-items: flex-start;
-      padding: 8rem 2.5rem 4rem 8vw;
-      position: relative; overflow: hidden;
-    }
-    .hero-bg {
-      position: absolute; inset: 0; pointer-events: none; z-index: 0;
-    }
-    .hero-bg-circle {
-      position: absolute; border-radius: 50%;
-      background: radial-gradient(circle, rgba(13,122,138,0.18) 0%, transparent 70%);
-    }
-    .circle-1 { width: 700px; height: 700px; top: -200px; right: -150px; animation: pulse 6s ease-in-out infinite; }
-    .circle-2 { width: 400px; height: 400px; bottom: -100px; left: -100px; animation: pulse 8s ease-in-out infinite 2s; }
-    .grid-overlay {
-      position: absolute; inset: 0;
-      background-image: linear-gradient(rgba(13,122,138,0.04) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(13,122,138,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-    @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.6} 50%{transform:scale(1.05);opacity:1} }
-
-    .hero-tag {
-      position: relative; z-index: 1;
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-family: 'DM Mono', monospace; font-size: 0.72rem;
-      color: var(--teal-light); letter-spacing: 0.12em; text-transform: uppercase;
-      margin-bottom: 1.5rem;
-      opacity: 0; animation: fadeUp 0.8s ease forwards 0.2s;
-    }
-    .hero-tag::before {
-      content: ''; width: 32px; height: 1px; background: var(--teal-light);
-    }
-    .hero-title {
-      position: relative; z-index: 1;
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(3rem, 8vw, 6.5rem);
-      font-weight: 900; line-height: 1.05;
-      color: var(--white);
-      opacity: 0; animation: fadeUp 0.9s ease forwards 0.4s;
-    }
-    .hero-title .accent { color: var(--teal-light); }
-    .hero-subtitle {
-      position: relative; z-index: 1;
-      font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 300;
-      color: var(--gray-light); margin-top: 1.2rem; max-width: 580px;
-      line-height: 1.7;
-      opacity: 0; animation: fadeUp 0.9s ease forwards 0.6s;
-    }
-    .hero-meta {
-      position: relative; z-index: 1;
-      display: flex; gap: 2rem; margin-top: 2.5rem; flex-wrap: wrap;
-      opacity: 0; animation: fadeUp 0.9s ease forwards 0.8s;
-    }
-    .hero-meta-item { display: flex; flex-direction: column; gap: 0.2rem; }
-    .hero-meta-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase; }
-    .hero-meta-value { font-size: 0.9rem; color: var(--gray-light); font-weight: 500; }
-    .hero-cta {
-      position: relative; z-index: 1;
-      margin-top: 3rem; display: flex; gap: 1rem; flex-wrap: wrap;
-      opacity: 0; animation: fadeUp 0.9s ease forwards 1s;
-    }
-    .btn-primary {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.85rem 2rem; background: var(--teal);
-      color: var(--white); font-weight: 600; font-size: 0.85rem;
-      letter-spacing: 0.04em; border: none; border-radius: 4px;
-      cursor: pointer; text-decoration: none;
-      transition: background 0.2s, transform 0.2s;
-    }
-    .btn-primary:hover { background: var(--teal-light); transform: translateY(-2px); }
-    .btn-outline {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      padding: 0.85rem 2rem; background: transparent;
-      color: var(--gray-light); font-weight: 500; font-size: 0.85rem;
-      letter-spacing: 0.04em; border: 1px solid rgba(189,208,216,0.3);
-      border-radius: 4px; cursor: pointer; text-decoration: none;
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .btn-outline:hover { border-color: var(--teal-light); color: var(--teal-light); }
-    .scroll-indicator {
-      position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
-      z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
-      opacity: 0; animation: fadeIn 1s ease forwards 1.5s;
-    }
-    .scroll-indicator span { font-size: 0.65rem; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; }
-    .scroll-line { width: 1px; height: 40px; background: linear-gradient(var(--teal), transparent); animation: scrollAnim 2s ease-in-out infinite; }
-    @keyframes scrollAnim { 0%{opacity:1;transform:scaleY(1) translateY(0)} 100%{opacity:0;transform:scaleY(0.5) translateY(20px)} }
-
-    /* ── SECTION BASE ── */
-    section { padding: 5rem 2.5rem; max-width: 1200px; margin: 0 auto; }
-    .section-tag {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      font-family: 'DM Mono', monospace; font-size: 0.7rem;
-      color: var(--teal); letter-spacing: 0.12em; text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-    .section-tag::before { content: ''; width: 24px; height: 1px; background: var(--teal); }
-    .section-title {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 700; line-height: 1.2; color: var(--white);
-      margin-bottom: 0.5rem;
-    }
-    .section-sub {
-      font-size: 1rem; color: var(--gray); font-weight: 400;
-      max-width: 560px; line-height: 1.7; margin-bottom: 3rem;
-    }
-
-    /* ── DIVIDER ── */
-    .divider { width: 100%; height: 1px; background: rgba(13,122,138,0.15); max-width: 1200px; margin: 0 auto; }
-
-    /* ── STATS BAR ── */
-    #stats-bar {
-      background: var(--teal); padding: 2.5rem;
-      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
-    }
-    .stat-item {
-      text-align: center; padding: 0.5rem 3rem;
-      border-right: 1px solid rgba(255,255,255,0.2);
-    }
-    .stat-item:last-child { border-right: none; }
-    .stat-num {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem; font-weight: 900; color: var(--white);
-      display: block; line-height: 1;
-    }
-    .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.75); margin-top: 0.3rem; letter-spacing: 0.04em; }
-
-    /* ── INTRO SECTION ── */
-    #intro { padding: 6rem 2.5rem; }
-    .intro-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
-      align-items: start; max-width: 1200px; margin: 0 auto;
-    }
-    .intro-text p { font-size: 1.05rem; color: var(--gray-light); line-height: 1.8; margin-bottom: 1.2rem; }
-    .intro-text .highlight { color: var(--teal-light); font-weight: 600; }
-    .shift-box {
-      background: rgba(13,122,138,0.08);
-      border: 1px solid rgba(13,122,138,0.25);
-      border-radius: 8px; padding: 2rem;
-    }
-    .shift-item {
-      display: flex; flex-direction: column; gap: 0.3rem;
-      padding: 1rem 0; border-bottom: 1px solid rgba(13,122,138,0.15);
-    }
-    .shift-item:last-child { border-bottom: none; padding-bottom: 0; }
-    .shift-before { font-size: 0.78rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.06em; }
-    .shift-after { font-size: 1rem; color: var(--teal-light); font-weight: 600; }
-    .arrow-down { color: var(--gold); font-size: 0.9rem; margin: 0.3rem 0; }
-
-    /* ── SERVICES SECTION ── */
-    #services { background: rgba(26,46,74,0.3); padding: 6rem 2.5rem; }
-    .services-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem; max-width: 1200px; margin: 0 auto;
-    }
-    .service-card {
-      background: rgba(15,31,51,0.8);
-      border: 1px solid rgba(13,122,138,0.2);
-      border-radius: 8px; padding: 1.8rem;
-      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
-      position: relative; overflow: hidden;
-    }
-    .service-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-      background: var(--teal); transform: scaleX(0); transform-origin: left;
-      transition: transform 0.3s ease;
-    }
-    .service-card:hover { transform: translateY(-5px); border-color: var(--teal); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-    .service-card:hover::before { transform: scaleX(1); }
-    .service-icon { font-size: 1.8rem; margin-bottom: 1rem; }
-    .service-cat { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.6rem; }
-    .service-card h3 { font-size: 1.1rem; font-weight: 600; color: var(--white); margin-bottom: 0.8rem; }
-    .service-items { list-style: none; }
-    .service-items li { font-size: 0.88rem; color: var(--gray-light); padding: 0.3rem 0; padding-left: 1rem; position: relative; }
-    .service-items li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-size: 0.75rem; top: 0.35rem; }
-
-    /* ── PROCESS SECTION ── */
-    #process { padding: 6rem 2.5rem; }
-    .process-wrapper { max-width: 1200px; margin: 0 auto; }
-    .process-steps { display: flex; flex-direction: column; gap: 0; }
-    .process-step {
-      display: grid; grid-template-columns: 80px 1fr;
-      gap: 0; position: relative;
-    }
-    .step-left { display: flex; flex-direction: column; align-items: center; }
-    .step-num {
-      width: 48px; height: 48px; border-radius: 50%;
-      background: var(--teal); color: var(--white);
-      font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; z-index: 1;
-      transition: transform 0.3s, background 0.3s;
-    }
-    .process-step:hover .step-num { transform: scale(1.15); background: var(--gold); }
-    .step-line { width: 1px; flex: 1; background: rgba(13,122,138,0.3); min-height: 40px; }
-    .process-step:last-child .step-line { display: none; }
-    .step-content {
-      padding: 0 0 2.5rem 2rem;
-      opacity: 0; transform: translateX(-20px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-    .step-content.visible { opacity: 1; transform: translateX(0); }
-    .step-content h3 { font-size: 1.1rem; font-weight: 600; color: var(--white); margin-bottom: 0.4rem; }
-    .step-content p { font-size: 0.9rem; color: var(--gray); line-height: 1.6; }
-
-    /* ── OUTCOMES SECTION ── */
-    #outcomes { background: rgba(26,46,74,0.3); padding: 6rem 2.5rem; }
-    .outcomes-hero {
-      max-width: 1200px; margin: 0 auto 3rem;
-      background: var(--teal); border-radius: 12px; padding: 2.5rem 3rem;
-      display: flex; align-items: center; gap: 3rem; flex-wrap: wrap;
-    }
-    .outcomes-big-num {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(3rem, 8vw, 5rem); font-weight: 900; color: var(--white);
-      line-height: 1;
-    }
-    .outcomes-big-desc { flex: 1; min-width: 200px; }
-    .outcomes-big-desc h3 { font-size: 1.3rem; color: var(--white); font-weight: 600; margin-bottom: 0.5rem; }
-    .outcomes-big-desc p { font-size: 0.9rem; color: rgba(255,255,255,0.8); line-height: 1.6; }
-    .outcomes-cards {
-      max-width: 1200px; margin: 0 auto;
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;
-    }
-    .outcome-card {
-      background: rgba(15,31,51,0.8);
-      border: 1px solid rgba(13,122,138,0.2); border-radius: 8px; padding: 1.5rem;
-      transition: transform 0.3s, border-color 0.3s;
-    }
-    .outcome-card:hover { transform: translateY(-4px); border-color: var(--teal); }
-    .outcome-icon { font-size: 1.5rem; margin-bottom: 0.8rem; }
-    .outcome-card h4 { font-size: 0.95rem; font-weight: 600; color: var(--teal-light); margin-bottom: 0.5rem; }
-    .outcome-card p { font-size: 0.85rem; color: var(--gray); line-height: 1.6; }
-
-    /* ── TABLE SECTION ── */
-    #table-section { padding: 6rem 2.5rem; }
-    .data-table-wrap { max-width: 900px; margin: 0 auto; overflow: hidden; border-radius: 10px; border: 1px solid rgba(13,122,138,0.25); }
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table thead tr { background: var(--teal); }
-    .data-table thead th { padding: 1rem 1.5rem; font-size: 0.82rem; font-weight: 600; color: var(--white); text-align: left; letter-spacing: 0.06em; text-transform: uppercase; }
-    .data-table tbody tr { border-bottom: 1px solid rgba(13,122,138,0.12); transition: background 0.2s; }
-    .data-table tbody tr:last-child { border-bottom: none; }
-    .data-table tbody tr:hover { background: rgba(13,122,138,0.08); }
-    .data-table tbody tr:nth-child(odd) { background: rgba(26,46,74,0.3); }
-    .data-table tbody tr:nth-child(odd):hover { background: rgba(13,122,138,0.12); }
-    .data-table td { padding: 0.9rem 1.5rem; font-size: 0.9rem; color: var(--gray-light); }
-    .data-table td:first-child { color: var(--white); font-weight: 500; }
-    .data-table td .badge { display: inline-block; padding: 0.15rem 0.6rem; background: rgba(13,122,138,0.25); color: var(--teal-light); border-radius: 20px; font-size: 0.78rem; font-weight: 600; }
-
-    /* ── NEPAL SECTION ── */
-    #nepal { padding: 6rem 2.5rem; }
-    .nepal-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-    .nepal-card {
-      background: rgba(15,31,51,0.8); border: 1px solid rgba(13,122,138,0.2);
-      border-radius: 10px; padding: 2rem; position: relative;
-    }
-    .nepal-card.highlight { border-color: var(--teal); }
-    .nepal-card h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--white); margin-bottom: 0.5rem; }
-    .nepal-card .sub-label { font-size: 0.78rem; color: var(--teal); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.2rem; font-family: 'DM Mono', monospace; }
-    .nepal-list { list-style: none; }
-    .nepal-list li { padding: 0.55rem 0; border-bottom: 1px solid rgba(13,122,138,0.12); font-size: 0.9rem; color: var(--gray-light); display: flex; align-items: flex-start; gap: 0.6rem; }
-    .nepal-list li:last-child { border-bottom: none; }
-    .nepal-list li::before { content: '✦'; color: var(--teal); font-size: 0.6rem; margin-top: 0.35rem; flex-shrink: 0; }
-    .gap-box {
-      grid-column: 1 / -1;
-      background: rgba(212,160,23,0.08); border: 1px solid rgba(212,160,23,0.3);
-      border-radius: 10px; padding: 1.8rem 2rem;
-      display: flex; align-items: flex-start; gap: 1.2rem;
-    }
-    .gap-icon { font-size: 1.5rem; flex-shrink: 0; }
-    .gap-box h4 { color: var(--gold); font-weight: 600; margin-bottom: 0.4rem; }
-    .gap-box p { font-size: 0.9rem; color: var(--gray-light); line-height: 1.7; }
-
-    /* ── LESSONS ── */
-    #lessons { background: rgba(26,46,74,0.3); padding: 6rem 2.5rem; }
-    .lessons-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-    .lesson-card {
-      background: rgba(15,31,51,0.8); border: 1px solid rgba(13,122,138,0.15);
-      border-radius: 8px; padding: 1.8rem; display: flex; gap: 1.2rem;
-      transition: transform 0.3s, border-color 0.3s;
-    }
-    .lesson-card:hover { transform: translateY(-4px); border-color: var(--teal); }
-    .lesson-num {
-      width: 36px; height: 36px; border-radius: 50%; background: var(--teal);
-      color: var(--white); font-family: 'DM Mono', monospace; font-size: 0.85rem; font-weight: 500;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    }
-    .lesson-body h4 { font-size: 1rem; font-weight: 600; color: var(--white); margin-bottom: 0.4rem; }
-    .lesson-body p { font-size: 0.86rem; color: var(--gray); line-height: 1.6; }
-
-    /* ── CONCLUSION ── */
-    #conclusion { padding: 6rem 2.5rem; }
-    .conclusion-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; align-items: start; }
-    blockquote {
-      border-left: 3px solid var(--gold); padding-left: 2rem;
-      font-family: 'Playfair Display', serif; font-size: 1.35rem;
-      font-style: italic; color: var(--white); line-height: 1.7;
-      margin-bottom: 2rem;
-    }
-    .takeaway-list { list-style: none; }
-    .takeaway-list li { display: flex; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px solid rgba(13,122,138,0.15); font-size: 0.92rem; color: var(--gray-light); }
-    .takeaway-list li:last-child { border-bottom: none; }
-    .takeaway-list li span.check { color: var(--teal); font-size: 1rem; flex-shrink: 0; }
-    .nepal-path {
-      background: rgba(13,122,138,0.1); border: 1px solid rgba(13,122,138,0.3);
-      border-radius: 10px; padding: 2rem;
-    }
-    .nepal-path h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--teal-light); margin-bottom: 1.2rem; }
-    .path-formula { display: flex; flex-direction: column; gap: 0.8rem; }
-    .path-row { display: flex; align-items: center; gap: 0.8rem; }
-    .path-label { font-size: 0.9rem; color: var(--gray-light); }
-    .path-op { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--teal); }
-    .path-result { background: var(--teal); color: var(--white); border-radius: 6px; padding: 0.6rem 1rem; font-weight: 600; font-size: 0.9rem; margin-top: 0.5rem; }
-
-    /* ── REFERENCES ── */
-    #references { background: rgba(26,46,74,0.3); padding: 6rem 2.5rem; }
-    .ref-grid { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
-    .ref-group h4 { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(13,122,138,0.25); }
-    .ref-group ul { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
-    .ref-group li { font-size: 0.88rem; color: var(--gray-light); padding-left: 1.2rem; position: relative; line-height: 1.6; }
-    .ref-group li::before { content: '—'; position: absolute; left: 0; color: var(--teal); }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--navy); border-top: 1px solid rgba(13,122,138,0.2);
-      padding: 3rem 2.5rem; text-align: center;
-    }
-    .footer-name { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--teal-light); margin-bottom: 0.3rem; }
-    .footer-detail { font-size: 0.85rem; color: var(--gray); margin-bottom: 0.2rem; }
-    .footer-credit { font-size: 0.75rem; color: rgba(90,107,122,0.5); margin-top: 1.5rem; font-family: 'DM Mono', monospace; }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    .reveal {
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .reveal-left {
-      opacity: 0; transform: translateX(-30px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal-left.visible { opacity: 1; transform: translateX(0); }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
-      #hero { padding: 7rem 1.5rem 4rem; }
-      .intro-grid { grid-template-columns: 1fr; gap: 2rem; }
-      .nepal-grid { grid-template-columns: 1fr; }
-      .conclusion-inner { grid-template-columns: 1fr; }
-      .stat-item { padding: 0.5rem 1.5rem; }
-      section { padding: 4rem 1.5rem; }
-      #services, #outcomes, #lessons, #references { padding: 4rem 1.5rem; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Ekal Seva Kendra — E-Governance Case Study · Jiban Niraula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,600&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --ink:#080C10;--ink2:#0D1318;--ink3:#111820;
+  --emerald:#00E5A0;--emerald2:#00C483;--emerald-dim:#003D2B;
+  --amber:#F5A623;--amber-dim:#3D2800;
+  --crimson:#FF4D6D;
+  --slate:#8FA3B1;--slate2:#C8D8E0;
+  --white:#F0F4F6;
+  --line:rgba(0,229,160,0.1);--glass:rgba(0,229,160,0.04);
+  --r:6px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Syne',sans-serif;background:var(--ink);color:var(--white);overflow-x:hidden;cursor:none;}
+::selection{background:var(--emerald);color:var(--ink);}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:var(--ink);}
+::-webkit-scrollbar-thumb{background:var(--emerald);}
+body::before{
+  content:'';position:fixed;inset:0;z-index:9000;pointer-events:none;opacity:0.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px 256px;
+}
+#cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--emerald);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .2s,height .2s;}
+#cursor-ring{position:fixed;width:36px;height:36px;border-radius:50%;border:1px solid rgba(0,229,160,.45);pointer-events:none;z-index:99998;transform:translate(-50%,-50%);}
+#prog{position:fixed;top:0;left:0;height:2px;width:0%;z-index:9999;background:linear-gradient(90deg,var(--emerald),var(--amber));box-shadow:0 0 10px var(--emerald);}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.4rem 3rem;transition:padding .3s,background .3s,border-color .3s;border-bottom:1px solid transparent;}
+nav.stuck{padding:.9rem 3rem;background:rgba(8,12,16,.92);backdrop-filter:blur(20px);border-color:var(--line);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:600;color:var(--emerald);display:flex;align-items:center;gap:.5rem;}
+.nav-logo span{color:var(--white);font-weight:300;font-style:italic;}
+.nav-links{display:flex;gap:2.2rem;list-style:none;}
+.nav-links a{font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);text-decoration:none;position:relative;padding-bottom:2px;transition:color .2s;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1px;background:var(--emerald);transition:width .3s;}
+.nav-links a:hover{color:var(--white);}.nav-links a:hover::after{width:100%;}
+.nav-ind{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--emerald);opacity:.7;}
+/* HERO */
+#hero{min-height:100vh;display:grid;grid-template-rows:1fr auto;padding:0 3rem;position:relative;overflow:hidden;}
+.mesh{position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 75% 20%,rgba(0,229,160,.08) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 60% at 20% 70%,rgba(245,166,35,.05) 0%,transparent 70%);
+  animation:meshPulse 10s ease-in-out infinite alternate;}
+@keyframes meshPulse{
+  to{background:radial-gradient(ellipse 60% 50% at 65% 35%,rgba(0,229,160,.11) 0%,transparent 70%),
+    radial-gradient(ellipse 40% 60% at 30% 60%,rgba(245,166,35,.07) 0%,transparent 70%);}
+}
+.grid-bg{position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 0%,transparent 100%);}
+.hero-inner{display:flex;flex-direction:column;justify-content:center;padding-top:8rem;position:relative;z-index:1;max-width:1100px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:.8rem;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--emerald);letter-spacing:.16em;text-transform:uppercase;margin-bottom:2rem;opacity:0;animation:riseUp .9s cubic-bezier(.22,1,.36,1) forwards .1s;}
+.ey-line{width:40px;height:1px;background:var(--emerald);box-shadow:0 0 8px var(--emerald);}
+.ey-dot{width:4px;height:4px;border-radius:50%;background:var(--amber);}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(4rem,10vw,9rem);font-weight:700;line-height:.95;letter-spacing:-.02em;opacity:0;animation:riseUp 1s cubic-bezier(.22,1,.36,1) forwards .25s;}
+.hero-title .l1{display:block;color:var(--white);}
+.hero-title .l2{display:block;background:linear-gradient(135deg,var(--emerald) 0%,var(--amber) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic;}
+.hero-desc{font-size:clamp(.9rem,1.5vw,1.1rem);font-weight:400;color:var(--slate);line-height:1.75;max-width:540px;margin-top:2rem;opacity:0;animation:riseUp 1s cubic-bezier(.22,1,.36,1) forwards .4s;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:2rem;opacity:0;animation:riseUp 1s cubic-bezier(.22,1,.36,1) forwards .55s;}
+.tag{padding:.35rem .9rem;border:1px solid var(--line);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--slate2);letter-spacing:.06em;background:var(--glass);transition:border-color .2s,color .2s;}
+.tag:hover{border-color:var(--emerald);color:var(--emerald);}
+.hero-actions{display:flex;gap:1rem;margin-top:2.5rem;flex-wrap:wrap;opacity:0;animation:riseUp 1s cubic-bezier(.22,1,.36,1) forwards .7s;}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.8rem;border-radius:4px;font-family:'Syne',sans-serif;font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:all .25s;cursor:none;}
+.btn-em{background:var(--emerald);color:var(--ink);}
+.btn-em:hover{background:var(--emerald2);transform:translateY(-2px);box-shadow:0 0 30px rgba(0,229,160,.3);}
+.btn-gh{background:transparent;color:var(--slate2);border:1px solid rgba(143,163,177,.3);}
+.btn-gh:hover{border-color:var(--amber);color:var(--amber);}
+.hero-bottom{position:relative;z-index:1;padding:2rem 0 3rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;border-top:1px solid var(--line);opacity:0;animation:fadeIn 1s ease forwards 1.1s;}
+.hs-row{display:flex;gap:3rem;flex-wrap:wrap;}
+.hs-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;color:var(--emerald);display:block;line-height:1;}
+.hs-lbl{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--slate);letter-spacing:.1em;text-transform:uppercase;margin-top:.2rem;}
+.scroll-hint{display:flex;align-items:center;gap:.6rem;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--slate);letter-spacing:.1em;text-transform:uppercase;}
+.scroll-line{width:1px;height:48px;background:linear-gradient(var(--emerald),transparent);animation:scrollDrop 1.8s ease-in-out infinite;}
+@keyframes scrollDrop{0%{transform:scaleY(1);opacity:1;}100%{transform:scaleY(.2) translateY(30px);opacity:0;}}
+@keyframes riseUp{from{opacity:0;transform:translateY(32px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+/* LAYOUT */
+.wrap{max-width:1140px;margin:0 auto;padding:0 3rem;}
+.section{padding:7rem 0;}
+.s-label{display:inline-flex;align-items:center;gap:.7rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--emerald);letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.2rem;}
+.s-label::before{content:'';width:28px;height:1px;background:var(--emerald);box-shadow:0 0 6px var(--emerald);}
+.s-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.6rem);font-weight:700;line-height:1.1;color:var(--white);margin-bottom:.6rem;}
+.s-title em{font-style:italic;color:var(--emerald);}
+.s-sub{font-size:1rem;font-weight:400;color:var(--slate);max-width:520px;line-height:1.75;margin-bottom:3.5rem;}
+.hdivider{height:1px;background:linear-gradient(90deg,transparent,var(--emerald-dim),transparent);max-width:1140px;margin:0 auto;}
+/* REVEAL */
+.r{opacity:0;transform:translateY(28px);transition:opacity .75s ease,transform .75s ease;}
+.r.on{opacity:1;transform:translateY(0);}
+.r-l{opacity:0;transform:translateX(-28px);transition:opacity .75s ease,transform .75s ease;}
+.r-l.on{opacity:1;transform:translateX(0);}
+.r-r{opacity:0;transform:translateX(28px);transition:opacity .75s ease,transform .75s ease;}
+.r-r.on{opacity:1;transform:translateX(0);}
+[data-d="1"]{transition-delay:.1s;}[data-d="2"]{transition-delay:.2s;}[data-d="3"]{transition-delay:.3s;}
+[data-d="4"]{transition-delay:.4s;}[data-d="5"]{transition-delay:.5s;}[data-d="6"]{transition-delay:.6s;}
+/* MARQUEE */
+.mq-band{overflow:hidden;padding:1.2rem 0;background:var(--emerald-dim);border-top:1px solid rgba(0,229,160,.15);border-bottom:1px solid rgba(0,229,160,.15);}
+.mq-track{display:flex;width:max-content;animation:mq 26s linear infinite;}
+.mq-track:hover{animation-play-state:paused;}
+.mq-item{padding:0 3rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--emerald);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:1.5rem;}
+.mq-item::after{content:'◆';opacity:.4;}
+@keyframes mq{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+/* INTRO */
+#intro{background:var(--ink);}
+.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
+.intro-body p{font-size:1.05rem;color:var(--slate2);line-height:1.85;margin-bottom:1.3rem;}
+.em{color:var(--emerald);font-weight:600;}
+.shift-stack{display:flex;flex-direction:column;gap:0;}
+.sh-row{padding:1.2rem 1.5rem;border-left:2px solid transparent;transition:border-color .3s,background .3s;border-radius:0 var(--r) var(--r) 0;}
+.sh-row:hover{border-color:var(--emerald);background:var(--glass);}
+.sh-row.bad{border-color:rgba(255,77,109,.4);}
+.sh-row.good{border-color:var(--emerald);background:rgba(0,229,160,.04);}
+.sh-lbl{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem;}
+.sh-row.bad .sh-lbl{color:var(--crimson);}
+.sh-row.good .sh-lbl{color:var(--emerald);}
+.sh-val{font-size:.95rem;color:var(--white);font-weight:600;}
+.sh-arrow{text-align:center;padding:.5rem;font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--amber);}
+/* SERVICES */
+#services{background:var(--ink2);}
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;}
+.svc-card{background:var(--ink2);padding:2rem 1.6rem;transition:background .3s;position:relative;}
+.svc-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--emerald),var(--amber));transform:scaleX(0);transform-origin:left;transition:transform .35s;}
+.svc-card:hover{background:var(--ink3);}.svc-card:hover::after{transform:scaleX(1);}
+.svc-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--emerald);letter-spacing:.12em;margin-bottom:1.2rem;display:block;}
+.svc-ico{font-size:1.6rem;margin-bottom:1rem;display:block;}
+.svc-card h3{font-size:.95rem;font-weight:700;color:var(--white);margin-bottom:.8rem;}
+.svc-list{list-style:none;}
+.svc-list li{font-size:.82rem;color:var(--slate);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.04);padding-left:1rem;position:relative;}
+.svc-list li::before{content:'→';position:absolute;left:0;color:var(--emerald);font-size:.7rem;}
+.svc-list li:last-child{border-bottom:none;}
+/* PROCESS */
+#process{background:var(--ink);}
+.timeline{display:flex;flex-direction:column;position:relative;max-width:780px;}
+.timeline::before{content:'';position:absolute;left:23px;top:0;bottom:0;width:1px;background:linear-gradient(var(--emerald-dim) 90%,transparent);}
+.tl-step{display:flex;gap:2rem;padding-bottom:2.5rem;position:relative;}
+.tl-step:last-child{padding-bottom:0;}
+.tl-dot{width:48px;height:48px;border-radius:50%;border:1px solid var(--emerald-dim);background:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--emerald);flex-shrink:0;z-index:1;transition:background .3s,border-color .3s,box-shadow .3s;}
+.tl-step:hover .tl-dot{background:var(--emerald);color:var(--ink);border-color:var(--emerald);box-shadow:0 0 20px rgba(0,229,160,.4);}
+.tl-content{padding-top:.7rem;}
+.tl-content h3{font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:.4rem;}
+.tl-content p{font-size:.88rem;color:var(--slate);line-height:1.7;}
+.tl-badge{display:inline-block;padding:.18rem .6rem;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.3);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--amber);margin-top:.5rem;letter-spacing:.08em;}
+.tl-step.final .tl-dot{background:var(--amber);border-color:var(--amber);color:var(--ink);box-shadow:0 0 20px rgba(245,166,35,.3);}
+/* OUTCOMES */
+#outcomes{background:var(--ink2);}
+.oc-spotlight{background:linear-gradient(135deg,var(--emerald-dim),rgba(0,61,43,.3));border:1px solid rgba(0,229,160,.2);border-radius:var(--r);padding:3rem;display:flex;align-items:center;gap:3rem;flex-wrap:wrap;margin-bottom:3rem;position:relative;overflow:hidden;}
+.oc-spotlight::before{content:'';position:absolute;right:-60px;top:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,160,.12),transparent 70%);}
+.big-stat{font-family:'Cormorant Garamond',serif;font-size:clamp(3.5rem,8vw,6rem);font-weight:700;color:var(--emerald);line-height:1;text-shadow:0 0 40px rgba(0,229,160,.3);}
+.big-info h3{font-size:1.2rem;font-weight:700;color:var(--white);margin-bottom:.5rem;}
+.big-info p{font-size:.9rem;color:var(--slate);line-height:1.7;max-width:380px;}
+.pills{display:flex;gap:.8rem;margin-top:1rem;flex-wrap:wrap;}
+.pill{padding:.3rem .8rem;background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.25);border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--emerald);}
+.oc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.oc-card{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:1.8rem;transition:border-color .3s,transform .3s;}
+.oc-card:hover{border-color:rgba(0,229,160,.3);transform:translateY(-4px);}
+.oc-icon{width:40px;height:40px;border-radius:var(--r);background:var(--glass);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:1.2rem;}
+.oc-card h4{font-size:.9rem;font-weight:700;color:var(--emerald);margin-bottom:.5rem;}
+.oc-card p{font-size:.84rem;color:var(--slate);line-height:1.65;}
+/* TABLE */
+#dtable{background:var(--ink);}
+.tbl-wrap{border-radius:var(--r);overflow:hidden;border:1px solid var(--line);}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:linear-gradient(90deg,var(--emerald-dim),rgba(0,61,43,.4));}
+thead th{padding:1rem 1.5rem;text-align:left;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--emerald);letter-spacing:.12em;text-transform:uppercase;border-bottom:1px solid rgba(0,229,160,.2);}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .2s;}
+tbody tr:hover{background:var(--glass);}
+tbody tr:nth-child(odd){background:rgba(255,255,255,.02);}
+tbody td{padding:.9rem 1.5rem;font-size:.88rem;color:var(--slate2);}
+tbody td:first-child{color:var(--white);font-weight:600;font-size:.85rem;}
+.chip{display:inline-flex;align-items:center;padding:.2rem .65rem;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:500;}
+.chip-em{background:rgba(0,229,160,.12);color:var(--emerald);border:1px solid rgba(0,229,160,.2);}
+.chip-am{background:rgba(245,166,35,.12);color:var(--amber);border:1px solid rgba(245,166,35,.2);}
+/* NEPAL */
+#nepal{background:var(--ink2);}
+.np-layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;}
+.np-card{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:2rem;}
+.np-card.accent{border-color:rgba(0,229,160,.3);background:rgba(0,229,160,.03);}
+.np-card h3{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:var(--white);margin-bottom:.3rem;}
+.np-sub{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--emerald);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.5rem;}
+.np-list{list-style:none;}
+.np-list li{padding:.55rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.88rem;color:var(--slate2);display:flex;gap:.7rem;}
+.np-list li:last-child{border-bottom:none;}
+.np-list li::before{content:'✦';color:var(--emerald);font-size:.55rem;margin-top:.38rem;flex-shrink:0;}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.cmp-head{padding:.65rem 1.2rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;}
+.cmp-head.e{background:rgba(0,229,160,.15);color:var(--emerald);}
+.cmp-head.n{background:rgba(245,166,35,.1);color:var(--amber);}
+.cmp-cell{padding:.7rem 1.2rem;font-size:.83rem;color:var(--slate2);border-bottom:1px solid rgba(255,255,255,.04);}
+.cmp-cell.ec{background:rgba(0,229,160,.03);}
+.cmp-cell.nc{background:rgba(245,166,35,.02);}
+.gap-alert{background:linear-gradient(135deg,rgba(245,166,35,.06),rgba(245,166,35,.02));border:1px solid rgba(245,166,35,.25);border-radius:var(--r);padding:1.8rem 2rem;display:flex;gap:1.4rem;align-items:flex-start;}
+.gap-alert-icon{font-size:1.6rem;flex-shrink:0;}
+.gap-alert h4{color:var(--amber);font-weight:700;margin-bottom:.4rem;}
+.gap-alert p{font-size:.9rem;color:var(--slate2);line-height:1.7;}
+/* LESSONS */
+#lessons{background:var(--ink);}
+.ls-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.ls-card{background:var(--ink2);border:1px solid var(--line);border-radius:var(--r);padding:1.8rem;display:flex;flex-direction:column;gap:1rem;transition:border-color .3s,transform .3s,box-shadow .3s;}
+.ls-card:hover{border-color:rgba(0,229,160,.35);transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.4);}
+.ls-id{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--emerald);letter-spacing:.12em;}
+.ls-card h4{font-size:.95rem;font-weight:700;color:var(--white);}
+.ls-card p{font-size:.84rem;color:var(--slate);line-height:1.65;flex:1;}
+.ls-bar{height:2px;background:linear-gradient(90deg,var(--emerald),transparent);margin-top:auto;border-radius:1px;}
+.ls-bar.am{background:linear-gradient(90deg,var(--amber),transparent);}
+/* CONCLUSION */
+#conclusion{background:var(--ink2);position:relative;overflow:hidden;}
+#conclusion::before{content:'';position:absolute;left:-200px;top:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,160,.05),transparent 70%);pointer-events:none;}
+.conc-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:4rem;align-items:start;}
+blockquote{font-family:'Cormorant Garamond',serif;font-size:clamp(1.3rem,2.5vw,1.7rem);font-style:italic;font-weight:300;color:var(--white);line-height:1.65;border-left:3px solid var(--amber);padding-left:1.8rem;margin-bottom:2.5rem;}
+.tk-list{list-style:none;}
+.tk-item{display:flex;gap:1rem;padding:.8rem 0;border-bottom:1px solid var(--line);font-size:.92rem;color:var(--slate2);line-height:1.6;transition:color .2s;}
+.tk-item:last-child{border-bottom:none;}.tk-item:hover{color:var(--white);}
+.tk-tic{color:var(--emerald);font-size:.8rem;margin-top:.3rem;flex-shrink:0;}
+.formula-box{background:var(--ink3);border:1px solid var(--line);border-radius:var(--r);padding:2rem;}
+.formula-box h3{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--emerald);margin-bottom:1.8rem;font-style:italic;}
+.f-row{padding:.7rem 0;font-size:.9rem;color:var(--slate2);border-bottom:1px solid var(--line);}
+.f-row:last-child{border-bottom:none;}
+.f-op{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--amber);text-align:center;padding:.2rem 0;}
+.f-result{margin-top:1.2rem;background:linear-gradient(135deg,var(--emerald-dim),rgba(0,61,43,.2));border:1px solid rgba(0,229,160,.3);border-radius:4px;padding:1rem 1.2rem;font-weight:700;font-size:.9rem;color:var(--emerald);}
+.f-note{margin-top:1.5rem;font-size:.83rem;color:var(--slate);line-height:1.7;font-style:italic;}
+/* REFERENCES */
+#references{background:var(--ink);}
+.ref-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+.ref-col h4{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--emerald);letter-spacing:.12em;text-transform:uppercase;padding-bottom:.7rem;border-bottom:1px solid rgba(0,229,160,.2);margin-bottom:1rem;}
+.ref-col ul{list-style:none;display:flex;flex-direction:column;gap:.6rem;}
+.ref-col li{font-size:.83rem;color:var(--slate);line-height:1.6;padding-left:1rem;position:relative;}
+.ref-col li::before{content:'—';position:absolute;left:0;color:var(--emerald-dim);}
+/* FOOTER */
+footer{background:var(--ink2);border-top:1px solid var(--line);padding:3.5rem 3rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;}
+.ft-name{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--white);}
+.ft-name span{color:var(--emerald);}
+.ft-info{font-size:.82rem;color:var(--slate);line-height:1.6;margin-top:.3rem;}
+.ft-credit{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:rgba(143,163,177,.4);letter-spacing:.08em;text-align:right;}
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem;}.nav-links{display:none;}
+  .wrap{padding:0 1.5rem;}
+  #hero{padding:0 1.5rem;}
+  .intro-grid,.np-layout,.conc-grid{grid-template-columns:1fr;}
+  .svc-grid{grid-template-columns:1fr 1fr;}
+  .oc-grid{grid-template-columns:1fr 1fr;}
+  .ls-grid{grid-template-columns:1fr;}
+  .ref-cols{grid-template-columns:1fr;}
+  footer{flex-direction:column;}
+  .ft-credit{text-align:center;}
+}
+@media(max-width:600px){
+  .svc-grid,.oc-grid{grid-template-columns:1fr;}
+}
+</style>
 </head>
 <body>
 
-  <div id="progress-bar"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<div id="prog"></div>
 
-  <!-- NAV -->
-  <nav id="navbar">
-    <span class="nav-brand">ESK Case Study</span>
-    <ul class="nav-links">
-      <li><a href="#intro">Intro</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="#process">Process</a></li>
-      <li><a href="#outcomes">Outcomes</a></li>
-      <li><a href="#nepal">Nepal</a></li>
-      <li><a href="#conclusion">Conclusion</a></li>
-    </ul>
-    <span class="nav-slide-indicator" id="section-counter">01 / 09</span>
-  </nav>
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">ESK <span>Case Study</span></div>
+  <ul class="nav-links">
+    <li><a href="#intro">Intro</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#outcomes">Outcomes</a></li>
+    <li><a href="#nepal">Nepal</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+  <div class="nav-ind" id="sec-ind">01 / 09</div>
+</nav>
 
-  <!-- HERO -->
-  <section id="hero">
-    <div class="hero-bg">
-      <div class="grid-overlay"></div>
-      <div class="hero-bg-circle circle-1"></div>
-      <div class="hero-bg-circle circle-2"></div>
+<!-- HERO -->
+<section id="hero">
+  <div class="mesh"></div>
+  <div class="grid-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <div class="ey-line"></div>
+      E-Governance Case Study
+      <div class="ey-dot"></div>
+      Haryana, India
     </div>
-    <span class="hero-tag">E-Governance Case Study</span>
-    <h1 class="hero-title">Ekal Seva<br /><span class="accent">Kendra</span></h1>
-    <p class="hero-subtitle">A single-window citizen service delivery model — transforming how governments serve people by redesigning governance around citizens, not departments.</p>
-    <div class="hero-meta">
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">Location</span>
-        <span class="hero-meta-value">Haryana, India</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">Model</span>
-        <span class="hero-meta-value">G2C E-Governance</span>
-      </div>
-      <div class="hero-meta-item">
-        <span class="hero-meta-label">Framework</span>
-        <span class="hero-meta-value">National e-Governance Plan</span>
-      </div>
+    <h1 class="hero-title">
+      <span class="l1">Ekal Seva</span>
+      <span class="l2">Kendra</span>
+    </h1>
+    <p class="hero-desc">A single-window citizen service delivery model that redesigned governance around people — not departments. One center. One submission. Every service.</p>
+    <div class="hero-tags">
+      <span class="tag">G2C E-Governance</span>
+      <span class="tag">National e-Governance Plan</span>
+      <span class="tag">e-DISHA Model</span>
+      <span class="tag">Digital Public Administration</span>
+      <span class="tag">CSC Framework</span>
     </div>
-    <div class="hero-cta">
-      <a href="#intro" class="btn-primary">Explore Case Study →</a>
-      <a href="#conclusion" class="btn-outline">Jump to Conclusion</a>
+    <div class="hero-actions">
+      <a href="#intro" class="btn btn-em">Explore Case Study ↓</a>
+      <a href="#conclusion" class="btn btn-gh">Jump to Conclusion</a>
     </div>
-    <div class="scroll-indicator">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <!-- STATS BAR -->
-  <div id="stats-bar">
-    <div class="stat-item"><span class="stat-num" data-target="117">0</span><div class="stat-label">Active ESK Centers</div></div>
-    <div class="stat-item"><span class="stat-num" data-target="1159">0</span><div class="stat-label">Rural CSCs</div></div>
-    <div class="stat-item"><span class="stat-num" data-target="49627">0</span><div class="stat-label">Certs Issued (Mar 2015)</div></div>
-    <div class="stat-item"><span class="stat-num" data-special="100%">0</span><div class="stat-label">Rural Rollout</div></div>
-    <div class="stat-item"><span class="stat-num" data-special="67%+">0</span><div class="stat-label">Urban Rollout</div></div>
   </div>
+  <div class="hero-bottom">
+    <div class="hs-row">
+      <div><span class="hs-num" data-count="117">0</span><div class="hs-lbl">Active Centers</div></div>
+      <div><span class="hs-num" data-count="49627">0</span><div class="hs-lbl">Certs / Month</div></div>
+      <div><span class="hs-num" data-special="100%">—</span><div class="hs-lbl">Rural Coverage</div></div>
+      <div><span class="hs-num" data-special="1,159">—</span><div class="hs-lbl">Rural CSCs</div></div>
+    </div>
+    <div class="scroll-hint"><div class="scroll-line"></div>Scroll to explore</div>
+  </div>
+</section>
 
-  <!-- INTRO -->
-  <section id="intro">
+<!-- MARQUEE -->
+<div class="mq-band">
+  <div class="mq-track">
+    <div class="mq-item">Single Window Delivery</div><div class="mq-item">Digital Workflow</div>
+    <div class="mq-item">Citizen-Centric Governance</div><div class="mq-item">49,627 Certificates — March 2015</div>
+    <div class="mq-item">Anti-Corruption Model</div><div class="mq-item">Rural Inclusion</div>
+    <div class="mq-item">Self-Sustaining Infrastructure</div><div class="mq-item">G2C E-Governance</div>
+    <div class="mq-item">Haryana India</div><div class="mq-item">National e-Governance Plan</div>
+    <div class="mq-item">Single Window Delivery</div><div class="mq-item">Digital Workflow</div>
+    <div class="mq-item">Citizen-Centric Governance</div><div class="mq-item">49,627 Certificates — March 2015</div>
+    <div class="mq-item">Anti-Corruption Model</div><div class="mq-item">Rural Inclusion</div>
+    <div class="mq-item">Self-Sustaining Infrastructure</div><div class="mq-item">G2C E-Governance</div>
+    <div class="mq-item">Haryana India</div><div class="mq-item">National e-Governance Plan</div>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section id="intro" class="section">
+  <div class="wrap">
     <div class="intro-grid">
-      <div class="intro-text reveal">
-        <span class="section-tag">01 — Introduction</span>
-        <h2 class="section-title">What is Ekal Seva Kendra?</h2>
-        <p><span class="highlight">Ekal Seva Kendra (ESK)</span> literally means "Single Service Center." It is a citizen-centric e-governance model designed to provide multiple government services through one access point — eliminating the need to visit multiple offices.</p>
-        <p>Implemented in <span class="highlight">Haryana, India</span> under the National e-Governance Plan (NeGP), ESK emerged through initiatives like e-DISHA and Common Service Centres to address the deep inefficiencies of traditional public service delivery.</p>
-        <p>At its core, ESK represents a fundamental shift: from <span class="highlight">department-centric administration</span> to <span class="highlight">citizen-centric governance</span> — making it one of the strongest practical examples of G2C e-governance.</p>
+      <div>
+        <div class="s-label r">01 — Introduction</div>
+        <h2 class="s-title r" data-d="1">What is Ekal<br/><em>Seva Kendra?</em></h2>
+        <div class="intro-body">
+          <p class="r" data-d="2"><span class="em">Ekal Seva Kendra (ESK)</span> literally means "Single Service Center." It consolidates multiple government services into one seamless access point — eliminating the burden of visiting multiple offices.</p>
+          <p class="r" data-d="3">Implemented in <span class="em">Haryana, India</span> under the National e-Governance Plan (NeGP), ESK emerged through e-DISHA and Common Service Centres (CSCs) to solve the deep inefficiencies of traditional public administration.</p>
+          <p class="r" data-d="4">Its most profound contribution was not digitization itself — but the <span class="em">complete redesign of service delivery</span> around the citizen rather than the government department.</p>
+        </div>
       </div>
-      <div class="shift-box reveal" style="transition-delay:0.2s">
-        <div class="shift-item">
-          <span class="shift-before">❌ Before ESK</span>
-          <span class="shift-after">Fragmented offices & repeated paperwork</span>
-        </div>
-        <div class="arrow-down">↓</div>
-        <div class="shift-item">
-          <span class="shift-before">❌ Before ESK</span>
-          <span class="shift-after">Long queues and administrative delays</span>
-        </div>
-        <div class="arrow-down">↓</div>
-        <div class="shift-item">
-          <span class="shift-before">❌ Before ESK</span>
-          <span class="shift-after">Middlemen, bribes, low transparency</span>
-        </div>
-        <div class="arrow-down">↓</div>
-        <div class="shift-item" style="border:none;">
-          <span class="shift-before">✅ After ESK</span>
-          <span class="shift-after" style="color:var(--gold)">One center. One submission. One process.</span>
-        </div>
+      <div class="shift-stack r-r" data-d="2">
+        <div class="sh-row bad"><div class="sh-lbl">❌ Before ESK</div><div class="sh-val">Multiple offices — separate queues, forms &amp; approvals</div></div>
+        <div class="sh-row bad"><div class="sh-lbl">❌ Before ESK</div><div class="sh-val">Middlemen, informal payments, zero transparency</div></div>
+        <div class="sh-row bad"><div class="sh-lbl">❌ Before ESK</div><div class="sh-val">Long delays, misplaced files, manual routing</div></div>
+        <div class="sh-arrow">↓</div>
+        <div class="sh-row good"><div class="sh-lbl">✅ After ESK</div><div class="sh-val">One center · One submission · One process · All services</div></div>
+        <div class="sh-row good"><div class="sh-lbl">✅ After ESK</div><div class="sh-val">Digital routing · Trackable · Time-bound · Accountable</div></div>
+        <div class="sh-row good"><div class="sh-lbl">✅ After ESK</div><div class="sh-val">Department-centric → <strong>Citizen-centric governance</strong></div></div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<div class="hdivider"></div>
 
-  <!-- SERVICES -->
-  <section id="services" style="max-width:100%;padding:6rem 2.5rem;">
-    <div style="max-width:1200px;margin:0 auto;">
-      <span class="section-tag reveal">02 — Services Offered</span>
-      <h2 class="section-title reveal">One Center, Multiple Services</h2>
-      <p class="section-sub reveal">ESK integrated services from multiple government departments into a single citizen-facing platform.</p>
-      <div class="services-grid">
-        <div class="service-card reveal">
-          <div class="service-icon">📋</div>
-          <div class="service-cat">Administrative</div>
-          <h3>Civil Certificates</h3>
-          <ul class="service-items">
-            <li>Birth Certificate</li>
-            <li>Death Certificate</li>
-            <li>Residence Certificate</li>
-            <li>Income Certificate</li>
-            <li>Caste Certificate</li>
-          </ul>
-        </div>
-        <div class="service-card reveal" style="transition-delay:0.1s">
-          <div class="service-icon">🏚️</div>
-          <div class="service-cat">Revenue & Land</div>
-          <h3>Land Records</h3>
-          <ul class="service-items">
-            <li>Land Record Copies</li>
-            <li>Revenue Documents</li>
-            <li>Property Records</li>
-            <li>Ownership Details</li>
-          </ul>
-        </div>
-        <div class="service-card reveal" style="transition-delay:0.2s">
-          <div class="service-icon">🚗</div>
-          <div class="service-cat">Transport</div>
-          <h3>Vehicle & License</h3>
-          <ul class="service-items">
-            <li>Driving License</li>
-            <li>Learner's License</li>
-            <li>Vehicle Registration</li>
-            <li>Ownership Transfer</li>
-          </ul>
-        </div>
-        <div class="service-card reveal" style="transition-delay:0.3s">
-          <div class="service-icon">⚡</div>
-          <div class="service-cat">Utility & Public</div>
-          <h3>Citizen Support</h3>
-          <ul class="service-items">
-            <li>Bill Payments</li>
-            <li>Application Forms</li>
-            <li>Status Tracking</li>
-            <li>Public Grievance Support</li>
-          </ul>
-        </div>
+<!-- SERVICES -->
+<section id="services" class="section">
+  <div class="wrap">
+    <div class="s-label r">02 — Services Offered</div>
+    <h2 class="s-title r" data-d="1">One Center,<br/><em>Every Service</em></h2>
+    <p class="s-sub r" data-d="2">ESK integrated services from multiple government departments into a single citizen-facing platform.</p>
+    <div class="svc-grid">
+      <div class="svc-card r" data-d="1"><span class="svc-num">01 / ADMIN</span><span class="svc-ico">📋</span><h3>Civil Certificates</h3><ul class="svc-list"><li>Birth Certificate</li><li>Death Certificate</li><li>Residence Certificate</li><li>Income Certificate</li><li>Caste Certificate</li></ul></div>
+      <div class="svc-card r" data-d="2"><span class="svc-num">02 / REVENUE</span><span class="svc-ico">🏚️</span><h3>Revenue &amp; Land</h3><ul class="svc-list"><li>Land Record Copies</li><li>Revenue Documents</li><li>Property Records</li><li>Ownership Details</li></ul></div>
+      <div class="svc-card r" data-d="3"><span class="svc-num">03 / TRANSPORT</span><span class="svc-ico">🚗</span><h3>Vehicle &amp; License</h3><ul class="svc-list"><li>Driving License</li><li>Learner's License</li><li>Vehicle Registration</li><li>Ownership Transfer</li></ul></div>
+      <div class="svc-card r" data-d="4"><span class="svc-num">04 / PUBLIC</span><span class="svc-ico">⚡</span><h3>Utility &amp; Support</h3><ul class="svc-list"><li>Bill Payments</li><li>Application Forms</li><li>Status Tracking</li><li>Grievance Support</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<div class="hdivider"></div>
+
+<!-- PROCESS -->
+<section id="process" class="section">
+  <div class="wrap">
+    <div class="s-label r">03 — Process Flow</div>
+    <h2 class="s-title r" data-d="1">How ESK <em>Works</em></h2>
+    <p class="s-sub r" data-d="2">Seven steps replace a system that once required citizens to navigate multiple offices, queues, and bureaucracies.</p>
+    <div class="timeline">
+      <div class="tl-step r" data-d="1"><div class="tl-dot">01</div><div class="tl-content"><h3>Citizen Visits ESK</h3><p>The citizen arrives at the single-window center. No pre-identification of the right department required. One door for all services.</p></div></div>
+      <div class="tl-step r" data-d="2"><div class="tl-dot">02</div><div class="tl-content"><h3>Submits Application</h3><p>One unified form. One submission. All required information captured at a single counter — no repeat visits, no duplicate paperwork.</p></div></div>
+      <div class="tl-step r" data-d="3"><div class="tl-dot">03</div><div class="tl-content"><h3>Staff Digitizes Data</h3><p>Trained center staff verify documents and enter the request into the digital system — removing the bottleneck of manual file creation.</p></div></div>
+      <div class="tl-step r" data-d="4"><div class="tl-dot">04</div><div class="tl-content"><h3>System Routes the Request</h3><p>The digital platform automatically routes the application to the relevant department. No manual file movement. No human discretion in routing.</p><span class="tl-badge">KEY TRANSFORMATION POINT</span></div></div>
+      <div class="tl-step r" data-d="5"><div class="tl-dot">05</div><div class="tl-content"><h3>Department Processes</h3><p>The concerned department reviews, verifies, and acts on the digital request. Workflows are standardized and time-bound.</p></div></div>
+      <div class="tl-step r" data-d="5"><div class="tl-dot">06</div><div class="tl-content"><h3>Output Returned to Center</h3><p>The approved service output is routed back through the same ESK center — creating a closed-loop, traceable delivery system.</p></div></div>
+      <div class="tl-step final r" data-d="6"><div class="tl-dot">✓</div><div class="tl-content"><h3>Citizen Receives Service</h3><p>The citizen collects their service from the same center they started at. <strong>Physical file movement became digital workflow movement.</strong></p></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="hdivider"></div>
+
+<!-- OUTCOMES -->
+<section id="outcomes" class="section">
+  <div class="wrap">
+    <div class="s-label r">04 — Outcomes &amp; Impact</div>
+    <h2 class="s-title r" data-d="1">Measurable <em>Governance</em> Results</h2>
+    <p class="s-sub r" data-d="2">ESK produced real, quantifiable improvements — not just a digital transformation in name only.</p>
+    <div class="oc-spotlight r" data-d="2">
+      <div class="big-stat" id="big-count">0</div>
+      <div class="big-info">
+        <h3>Certificates issued electronically in March 2015 alone</h3>
+        <p>A single month's output proving ESK handled real, high-volume citizen transactions at state scale — not a pilot project.</p>
+        <div class="pills"><span class="pill">≈ 1,600+ / day</span><span class="pill">≈ 67+ / hour</span><span class="pill">400–500 / center / month</span></div>
       </div>
     </div>
-  </section>
-
-  <!-- PROCESS -->
-  <section id="process">
-    <span class="section-tag reveal">03 — Process Flow</span>
-    <h2 class="section-title reveal">How ESK Works</h2>
-    <p class="section-sub reveal">A simple 7-step digital routing workflow replaces fragmented multi-office visits.</p>
-    <div class="process-wrapper">
-      <div class="process-steps">
-        <div class="process-step">
-          <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
-          <div class="step-content"><h3>Citizen Visits ESK</h3><p>The citizen arrives at the single-window service center — no need to identify the right department first.</p></div>
-        </div>
-        <div class="process-step">
-          <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
-          <div class="step-content"><h3>Submits Application</h3><p>One unified form. One submission. All required information is captured at a single counter.</p></div>
-        </div>
-        <div class="process-step">
-          <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
-          <div class="step-content"><h3>Staff Digitizes Data</h3><p>Center staff verify documents and enter the citizen's request into the digital system accurately.</p></div>
-        </div>
-        <div class="process-step">
-          <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
-          <div class="step-content"><h3>System Routes Request</h3><p>The digital system automatically routes the application to the relevant government department — no manual file movement.</p></div>
-        </div>
-        <div class="process-step">
-          <div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div>
-          <div class="step-content"><h3>Department Processes</h3><p>The concerned department reviews, verifies, and approves or acts on the request digitally.</p></div>
-        </div>
-        <div class="process-step">
-          <div class="step-left"><div class="step-num">6</div><div class="step-line"></div></div>
-          <div class="step-content"><h3>Output Returned</h3><p>The approved service output is routed back through the same ESK center — closed-loop delivery.</p></div>
-        </div>
-        <div class="process-step">
-          <div class="step-left"><div class="step-num" style="background:var(--gold)">7</div><div class="step-line"></div></div>
-          <div class="step-content"><h3>Citizen Receives Service ✓</h3><p>The citizen collects their completed service from the same center they started at. Physical file movement → digital workflow movement.</p></div>
-        </div>
-      </div>
+    <div class="oc-grid">
+      <div class="oc-card r" data-d="1"><div class="oc-icon">⚙️</div><h4>Efficiency</h4><p>Services became electronically issued. Paper dependency, repeated paperwork, and physical file movement all significantly reduced.</p></div>
+      <div class="oc-card r" data-d="2"><div class="oc-icon">⏱️</div><h4>Speed</h4><p>Workflows became time-bound. Many services became same-day. Digital routing eliminated delays from manual file handling.</p></div>
+      <div class="oc-card r" data-d="3"><div class="oc-icon">🔒</div><h4>Anti-Corruption</h4><p>Middlemen dependence reduced. Digital logs and fixed counters limited discretion. Trackable workflows closed manipulation gaps.</p></div>
+      <div class="oc-card r" data-d="4"><div class="oc-icon">💰</div><h4>Self-Sustaining</h4><p>Operated on service fees with low recurring government dependency — financially practical for long-term public deployment.</p></div>
+      <div class="oc-card r" data-d="5"><div class="oc-icon">👷</div><h4>Employment</h4><p>Created local ICT-based jobs — district-level operators, digital support roles, and local service capacity in communities.</p></div>
+      <div class="oc-card r" data-d="6"><div class="oc-icon">😊</div><h4>Citizen Trust</h4><p>Post-implementation studies showed improved accessibility, transparency, convenience, and measurable increase in public trust.</p></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
-
-  <!-- OUTCOMES -->
-  <section id="outcomes" style="max-width:100%;padding:6rem 2.5rem;">
-    <div style="max-width:1200px;margin:0 auto;">
-      <span class="section-tag reveal">04 — Outcomes & Impact</span>
-      <h2 class="section-title reveal">Measurable Governance Results</h2>
-      <p class="section-sub reveal">ESK was not just a digital project — it produced real, quantifiable improvements in public service delivery.</p>
-      <div class="outcomes-hero reveal">
-        <div class="outcomes-big-num">49,627</div>
-        <div class="outcomes-big-desc">
-          <h3>Certificates issued electronically in March 2015 alone</h3>
-          <p>That equals approximately 1,600+ certificates per day and 67+ per hour — proving ESK handled real, high-volume citizen transactions at scale.</p>
-        </div>
-      </div>
-      <div class="outcomes-cards">
-        <div class="outcome-card reveal">
-          <div class="outcome-icon">⚙️</div>
-          <h4>Efficiency</h4>
-          <p>Services became electronically issued. Paper dependency, repeated paperwork, and file movement all significantly reduced.</p>
-        </div>
-        <div class="outcome-card reveal" style="transition-delay:0.1s">
-          <div class="outcome-icon">⏱️</div>
-          <h4>Speed</h4>
-          <p>Workflows became time-bound. Many services became same-day. Digital routing removed delays caused by manual file handling.</p>
-        </div>
-        <div class="outcome-card reveal" style="transition-delay:0.2s">
-          <div class="outcome-icon">🔒</div>
-          <h4>Anti-Corruption</h4>
-          <p>Middlemen dependence reduced. Digital logs and fixed counters limited discretion. Trackable workflows reduced manipulation.</p>
-        </div>
-        <div class="outcome-card reveal" style="transition-delay:0.3s">
-          <div class="outcome-icon">💰</div>
-          <h4>Self-Sustaining</h4>
-          <p>Operated on service fees with low recurring government dependency — making it financially practical for long-term deployment.</p>
-        </div>
-        <div class="outcome-card reveal" style="transition-delay:0.4s">
-          <div class="outcome-icon">👷</div>
-          <h4>Employment</h4>
-          <p>Created local ICT-based jobs — district-level service operators, digital support roles, and local service capacity.</p>
-        </div>
-        <div class="outcome-card reveal" style="transition-delay:0.5s">
-          <div class="outcome-icon">😊</div>
-          <h4>Citizen Satisfaction</h4>
-          <p>Post-implementation studies showed improved accessibility, transparency, convenience, and trust in public service delivery.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TABLE -->
-  <section id="table-section">
-    <span class="section-tag reveal">04b — Summary</span>
-    <h2 class="section-title reveal">Implementation at a Glance</h2>
-    <div class="data-table-wrap reveal">
-      <table class="data-table">
-        <thead>
-          <tr><th>Indicator</th><th>Outcome After Implementation</th></tr>
-        </thead>
+<!-- DATA TABLE -->
+<section id="dtable" class="section" style="padding-top:0;">
+  <div class="wrap">
+    <div class="s-label r">04b — Summary Data</div>
+    <h2 class="s-title r" data-d="1">Implementation <em>at a Glance</em></h2>
+    <div class="tbl-wrap r" data-d="2">
+      <table>
+        <thead><tr><th>Indicator</th><th>Outcome After Implementation</th></tr></thead>
         <tbody>
-          <tr><td>Operational Centers</td><td><span class="badge">117</span> active ESK / e-DISHA centers</td></tr>
+          <tr><td>Operational Centers</td><td><span class="chip chip-em">117</span> &nbsp;active ESK / e-DISHA centers</td></tr>
           <tr><td>Rural CSC Network</td><td>1,159 planned</td></tr>
-          <tr><td>Urban CSC Network</td><td>104 planned</td></tr>
-          <tr><td>Rural Rollout</td><td><span class="badge">100%</span> coverage</td></tr>
-          <tr><td>Urban Rollout</td><td><span class="badge">67%+</span> coverage</td></tr>
-          <tr><td>Certificates Issued</td><td>49,627 in March 2015</td></tr>
+          <tr><td>Urban CSC Network</td><td>104 planned &nbsp;·&nbsp; 49 showcase centers</td></tr>
+          <tr><td>Rural Rollout Coverage</td><td><span class="chip chip-em">100%</span></td></tr>
+          <tr><td>Urban Rollout Coverage</td><td><span class="chip chip-am">67%+</span></td></tr>
+          <tr><td>Certificates Issued</td><td>49,627 in March 2015 alone</td></tr>
           <tr><td>Daily Output</td><td>1,600+ certificates per day</td></tr>
           <tr><td>Service Speed</td><td>Faster and time-bound delivery</td></tr>
-          <tr><td>Corruption</td><td>Reduced middlemen dependence</td></tr>
-          <tr><td>Cost Model</td><td>Self-sustaining via service fees</td></tr>
-          <tr><td>Employment</td><td>Local ICT jobs created</td></tr>
-          <tr><td>Citizen Experience</td><td>Improved transparency and trust</td></tr>
+          <tr><td>Corruption Impact</td><td>Reduced middlemen dependence significantly</td></tr>
+          <tr><td>Financial Model</td><td>Self-sustaining via service fees</td></tr>
+          <tr><td>Employment Created</td><td>Local ICT-based district jobs</td></tr>
+          <tr><td>Citizen Experience</td><td>Improved transparency and public trust</td></tr>
         </tbody>
       </table>
     </div>
-  </section>
+  </div>
+</section>
 
-  <div class="divider"></div>
+<div class="hdivider"></div>
 
-  <!-- NEPAL -->
-  <section id="nepal">
-    <span class="section-tag reveal">05 — Nepal Relevance</span>
-    <h2 class="section-title reveal">ESK & Nepal's E-Governance Journey</h2>
-    <p class="section-sub reveal">Nepal is increasingly adopting the same single-window citizen service philosophy — making ESK directly applicable.</p>
-    <div class="nepal-grid">
-      <div class="nepal-card reveal">
+<!-- NEPAL -->
+<section id="nepal" class="section">
+  <div class="wrap">
+    <div class="s-label r">05 — Nepal Relevance</div>
+    <h2 class="s-title r" data-d="1">ESK &amp; Nepal's <em>E-Governance Journey</em></h2>
+    <p class="s-sub r" data-d="2">Nepal is rapidly adopting the same single-window citizen service philosophy — making ESK directly applicable as a model.</p>
+    <div class="np-layout">
+      <div class="np-card r" data-d="1">
         <h3>Nepal's Digital Platform</h3>
-        <div class="sub-label">Nagarik App — What Nepal Has Today</div>
-        <ul class="nepal-list">
-          <li>PAN registration online</li>
-          <li>Police clearance certificates</li>
-          <li>National ID card integration</li>
-          <li>Passport and voter card linkage</li>
-          <li>Driving license linkage</li>
-          <li>Tax and transport services</li>
+        <div class="np-sub">Nagarik App — What Nepal Has Today</div>
+        <ul class="np-list">
+          <li>PAN registration online</li><li>Police clearance certificates</li>
+          <li>National ID card integration</li><li>Passport and voter card linkage</li>
+          <li>Driving license services</li><li>Tax and transport services</li>
           <li>Digital local governance reforms</li>
         </ul>
       </div>
-      <div class="nepal-card highlight reveal" style="transition-delay:0.2s">
-        <h3>ESK Model Comparison</h3>
-        <div class="sub-label">ESK vs. Nagarik App</div>
-        <ul class="nepal-list">
-          <li><strong style="color:var(--white)">Type:</strong> Physical + Digital vs. Mobile-First Digital</li>
-          <li><strong style="color:var(--white)">Access:</strong> Walk-in center vs. Smartphone App</li>
-          <li><strong style="color:var(--white)">Assistance:</strong> Staff-assisted vs. Self-service</li>
-          <li><strong style="color:var(--white)">Rural Reach:</strong> Physical centers vs. Internet required</li>
-          <li><strong style="color:var(--white)">Delivery:</strong> In-person pickup vs. Digital output</li>
-          <li><strong style="color:var(--white)">Audience:</strong> All citizens vs. Digitally capable</li>
-        </ul>
-      </div>
-      <div class="gap-box reveal">
-        <div class="gap-icon">⚠️</div>
-        <div>
-          <h4>The Gap Nepal Must Bridge</h4>
-          <p>Nepal has built the digital access layer (Nagarik App) but still lacks enough <strong style="color:var(--white)">assisted physical one-window service centers</strong> — especially for rural citizens, elderly users, low-literacy populations, and digitally excluded groups. Nepal has the platform; it now needs the delivery structure.</p>
+      <div class="np-card accent r" data-d="2">
+        <h3>ESK vs. Nagarik App</h3>
+        <div class="np-sub">Side-by-Side Comparison</div>
+        <div class="cmp-grid">
+          <div class="cmp-head e">ESK (Haryana)</div><div class="cmp-head n">Nagarik App (Nepal)</div>
+          <div class="cmp-cell ec">Physical + Digital</div><div class="cmp-cell nc">Mobile-First Digital</div>
+          <div class="cmp-cell ec">Walk-in center</div><div class="cmp-cell nc">Smartphone App</div>
+          <div class="cmp-cell ec">Staff-assisted</div><div class="cmp-cell nc">Self-service</div>
+          <div class="cmp-cell ec">Physical centers</div><div class="cmp-cell nc">Internet required</div>
+          <div class="cmp-cell ec">All citizens</div><div class="cmp-cell nc">Digitally capable</div>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- LESSONS -->
-  <section id="lessons" style="max-width:100%;padding:6rem 2.5rem;background:rgba(26,46,74,0.3);">
-    <div style="max-width:1200px;margin:0 auto;">
-      <span class="section-tag reveal">06 — Lessons Learned</span>
-      <h2 class="section-title reveal">What ESK Teaches Us</h2>
-      <p class="section-sub reveal">Six key governance lessons that apply beyond Haryana — and directly to Nepal.</p>
-      <div class="lessons-grid">
-        <div class="lesson-card reveal">
-          <div class="lesson-num">L1</div>
-          <div class="lesson-body"><h4>Redesign, Not Just Digitize</h4><p>Success came from re-engineering the service delivery process around the citizen, not just putting existing forms online.</p></div>
-        </div>
-        <div class="lesson-card reveal" style="transition-delay:0.1s">
-          <div class="lesson-num">L2</div>
-          <div class="lesson-body"><h4>Assisted Access Matters</h4><p>Low digital literacy and rural geography require physical centers with trained staff — technology alone cannot bridge the access gap.</p></div>
-        </div>
-        <div class="lesson-card reveal" style="transition-delay:0.2s">
-          <div class="lesson-num">L3</div>
-          <div class="lesson-body"><h4>Integration Creates Value</h4><p>Connecting multiple departments into one backend system multiplies efficiency and exponentially reduces citizen burden.</p></div>
-        </div>
-        <div class="lesson-card reveal" style="transition-delay:0.3s">
-          <div class="lesson-num">L4</div>
-          <div class="lesson-body"><h4>Accountability Through Digitization</h4><p>Digital logs, trackable workflows, and standardized processes reduced discretion and created automatic accountability.</p></div>
-        </div>
-        <div class="lesson-card reveal" style="transition-delay:0.4s">
-          <div class="lesson-num">L5</div>
-          <div class="lesson-body"><h4>Scale for Real Impact</h4><p>ESK worked because it scaled to 117+ centers covering 100% of rural Haryana. Partial rollouts fail to deliver systemic change.</p></div>
-        </div>
-        <div class="lesson-card reveal" style="transition-delay:0.5s">
-          <div class="lesson-num">L6</div>
-          <div class="lesson-body"><h4>Self-Sustainability Ensures Longevity</h4><p>The service-fee model reduced dependence on recurring government funding, making ESK financially viable and replicable.</p></div>
-        </div>
+    <div class="gap-alert r" data-d="3">
+      <div class="gap-alert-icon">⚠️</div>
+      <div>
+        <h4>The Gap Nepal Must Bridge</h4>
+        <p>Nepal has built the digital access layer (Nagarik App) but still lacks enough <strong>assisted physical one-window service centers</strong> — especially for rural citizens, elderly users, low-literacy populations, and digitally excluded groups. Nepal has the platform; it now needs the <em>delivery structure</em>.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CONCLUSION -->
-  <section id="conclusion">
-    <span class="section-tag reveal">07 — Conclusion</span>
-    <h2 class="section-title reveal">The Bigger Picture</h2>
-    <div class="conclusion-inner">
-      <div class="reveal">
-        <blockquote>"Ekal Seva Kendra proved that successful e-governance is not just about digitizing government. It is about redesigning governance around citizens."</blockquote>
-        <ul class="takeaway-list">
-          <li><span class="check">✦</span> Fewer service touchpoints — citizens visit once, not many offices</li>
-          <li><span class="check">✦</span> Faster delivery — time-bound, predictable digital workflows</li>
-          <li><span class="check">✦</span> Lower citizen cost — reduced effort, no middlemen</li>
-          <li><span class="check">✦</span> Reduced corruption — digital logs and accountability</li>
-          <li><span class="check">✦</span> Improved transparency — fully trackable applications</li>
-          <li><span class="check">✦</span> Better administrative efficiency and citizen satisfaction</li>
+<div class="hdivider"></div>
+
+<!-- LESSONS -->
+<section id="lessons" class="section">
+  <div class="wrap">
+    <div class="s-label r">06 — Lessons Learned</div>
+    <h2 class="s-title r" data-d="1">What ESK <em>Teaches Us</em></h2>
+    <p class="s-sub r" data-d="2">Six governance insights applicable beyond Haryana — and directly to Nepal's e-governance roadmap.</p>
+    <div class="ls-grid">
+      <div class="ls-card r" data-d="1"><div class="ls-id">L — 01</div><h4>Redesign, Not Just Digitize</h4><p>ESK succeeded by completely re-engineering service delivery around the citizen — not by digitizing existing departmental processes.</p><div class="ls-bar"></div></div>
+      <div class="ls-card r" data-d="2"><div class="ls-id">L — 02</div><h4>Assisted Access Matters</h4><p>Low digital literacy and rural geography demand physical centers with trained staff. Technology alone cannot bridge the access gap.</p><div class="ls-bar am"></div></div>
+      <div class="ls-card r" data-d="3"><div class="ls-id">L — 03</div><h4>Integration Multiplies Value</h4><p>Connecting multiple departments into one backend system multiplies efficiency and exponentially reduces the burden placed on citizens.</p><div class="ls-bar"></div></div>
+      <div class="ls-card r" data-d="4"><div class="ls-id">L — 04</div><h4>Digital = Built-in Accountability</h4><p>Digital logs, trackable workflows, and standardized processes reduce human discretion and create automatic accountability mechanisms.</p><div class="ls-bar am"></div></div>
+      <div class="ls-card r" data-d="5"><div class="ls-id">L — 05</div><h4>Scale for Systemic Change</h4><p>ESK worked because it reached 117+ centers and 100% rural coverage. Partial rollouts fail to deliver the systemic change needed.</p><div class="ls-bar"></div></div>
+      <div class="ls-card r" data-d="6"><div class="ls-id">L — 06</div><h4>Self-Sustainability = Longevity</h4><p>The service-fee model reduced dependence on recurring government funding — making ESK financially viable and replicable.</p><div class="ls-bar am"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONCLUSION -->
+<section id="conclusion" class="section">
+  <div class="wrap">
+    <div class="s-label r">07 — Conclusion</div>
+    <h2 class="s-title r" data-d="1">The Bigger <em>Picture</em></h2>
+    <div class="conc-grid">
+      <div>
+        <blockquote class="r" data-d="2">"Ekal Seva Kendra proved that successful e-governance is not just about digitizing government. It is about redesigning governance around citizens."</blockquote>
+        <ul class="tk-list">
+          <li class="tk-item r" data-d="2"><span class="tk-tic">✦</span>Fewer service touchpoints — citizens visit once, not many offices</li>
+          <li class="tk-item r" data-d="3"><span class="tk-tic">✦</span>Faster delivery — time-bound, predictable digital workflows</li>
+          <li class="tk-item r" data-d="3"><span class="tk-tic">✦</span>Lower citizen cost — reduced effort, no middlemen fees</li>
+          <li class="tk-item r" data-d="4"><span class="tk-tic">✦</span>Reduced corruption — digital logs and enforced accountability</li>
+          <li class="tk-item r" data-d="4"><span class="tk-tic">✦</span>Improved transparency — fully trackable applications</li>
+          <li class="tk-item r" data-d="5"><span class="tk-tic">✦</span>Better efficiency and measurable citizen satisfaction</li>
         </ul>
       </div>
-      <div class="nepal-path reveal" style="transition-delay:0.2s">
+      <div class="formula-box r-r" data-d="3">
         <h3>Nepal's Path Forward</h3>
-        <div class="path-formula">
-          <div class="path-row"><span class="path-label">ESK's assisted single-window delivery model</span></div>
-          <div class="path-row"><span class="path-op">+</span></div>
-          <div class="path-row"><span class="path-label">Nepal's Nagarik App digital platform</span></div>
-          <div class="path-row"><span class="path-op">=</span></div>
-          <div class="path-result">Inclusive, scalable e-governance for every Nepali citizen</div>
-        </div>
-        <p style="font-size:0.85rem;color:var(--gray);margin-top:1.5rem;line-height:1.7;font-style:italic;">Nepal has already begun that journey digitally. The next step is to make it accessible for everyone.</p>
+        <div class="f-row">ESK's assisted single-window delivery model</div>
+        <div class="f-op">+</div>
+        <div class="f-row">Nepal's Nagarik App digital platform</div>
+        <div class="f-op">=</div>
+        <div class="f-result">Inclusive, scalable e-governance for every Nepali citizen</div>
+        <p class="f-note">Nepal has already begun that journey digitally. The next step is to build the delivery structure — and make it accessible for everyone.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- REFERENCES -->
-  <section id="references" style="max-width:100%;padding:6rem 2.5rem;background:rgba(26,46,74,0.3);">
-    <div style="max-width:1200px;margin:0 auto;">
-      <span class="section-tag reveal">08 — References</span>
-      <h2 class="section-title reveal">Sources & Further Reading</h2>
-      <div class="ref-grid reveal">
-        <div class="ref-group">
-          <h4>Government Sources</h4>
-          <ul>
-            <li>Government of Haryana — e-DISHA and ESK Implementation Reports (2013–2015)</li>
-            <li>Ministry of Electronics & IT, India — National e-Governance Plan (NeGP) Documentation</li>
-            <li>Common Service Centres Scheme — CSC e-Governance Services India Ltd.</li>
-          </ul>
-        </div>
-        <div class="ref-group">
-          <h4>Academic & Policy Sources</h4>
-          <ul>
-            <li>World Bank — Digital Government and Citizen Services in South Asia</li>
-            <li>UNDP — e-Governance Readiness and Public Service Delivery Models</li>
-            <li>Saxena, K.B.C. — Towards Excellence in E-Governance, International Journal of Public Sector Management</li>
-          </ul>
-        </div>
-        <div class="ref-group">
-          <h4>Nepal Context</h4>
-          <ul>
-            <li>Government of Nepal — Nagarik App Official Documentation and Portal</li>
-            <li>Nepal Telecommunication Authority — ICT Development Annual Reports</li>
-            <li>Ministry of Federal Affairs — Digital Local Governance Reform Initiatives</li>
-          </ul>
-        </div>
-      </div>
+<div class="hdivider"></div>
+
+<!-- REFERENCES -->
+<section id="references" class="section">
+  <div class="wrap">
+    <div class="s-label r">08 — References</div>
+    <h2 class="s-title r" data-d="1">Sources &amp; <em>Further Reading</em></h2>
+    <div class="ref-cols r" data-d="2">
+      <div class="ref-col"><h4>Government Sources</h4><ul>
+        <li>Government of Haryana — e-DISHA and ESK Implementation Reports (2013–2015)</li>
+        <li>Ministry of Electronics &amp; IT, India — National e-Governance Plan (NeGP)</li>
+        <li>Common Service Centres Scheme — CSC e-Governance Services India Ltd.</li>
+      </ul></div>
+      <div class="ref-col"><h4>Academic &amp; Policy Sources</h4><ul>
+        <li>World Bank — Digital Government and Citizen Services in South Asia</li>
+        <li>UNDP — e-Governance Readiness and Public Service Delivery Models</li>
+        <li>Saxena, K.B.C. — Towards Excellence in E-Governance, IJPSM</li>
+      </ul></div>
+      <div class="ref-col"><h4>Nepal Context</h4><ul>
+        <li>Government of Nepal — Nagarik App Official Documentation</li>
+        <li>Nepal Telecommunication Authority — ICT Development Annual Reports</li>
+        <li>Ministry of Federal Affairs — Digital Local Governance Reform Initiatives</li>
+      </ul></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-name">Jiban Niraula</div>
-    <div class="footer-detail">BCA 7th Semester &nbsp;·&nbsp; Vishwa Adarsha College, Itahari, Sunsari</div>
-    <div class="footer-detail" style="margin-top:0.3rem;">E-Governance &amp; Digital Public Administration — Case Study Presentation</div>
-    <div class="footer-credit">Ekal Seva Kendra © 2026 &nbsp;·&nbsp; Built for GitHub Pages</div>
-  </footer>
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="ft-name">Jiban <span>Niraula</span></div>
+    <div class="ft-info">BCA 7th Semester &nbsp;·&nbsp; Vishwa Adarsha College, Itahari, Sunsari<br/>E-Governance &amp; Digital Public Administration — Case Study Presentation</div>
+  </div>
+  <div>
+    <div class="ft-credit">EKAL SEVA KENDRA &nbsp;·&nbsp; CASE STUDY WEBSITE<br/>BUILT FOR GITHUB PAGES &nbsp;·&nbsp; 2026</div>
+  </div>
+</footer>
 
-  <script>
-    // ── PROGRESS BAR ──
-    const bar = document.getElementById('progress-bar');
-    window.addEventListener('scroll', () => {
-      const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
-      bar.style.width = pct + '%';
-    });
-
-    // ── NAV SCROLL ──
-    const nav = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 60);
-    });
-
-    // ── SECTION COUNTER ──
-    const sections = ['hero','intro','services','process','outcomes','table-section','nepal','lessons','conclusion'];
-    const counter = document.getElementById('section-counter');
-    const sectionEls = sections.map(id => document.getElementById(id)).filter(Boolean);
-    window.addEventListener('scroll', () => {
-      let current = 0;
-      sectionEls.forEach((el, i) => {
-        if (window.scrollY >= el.offsetTop - 200) current = i;
-      });
-      counter.textContent = String(current + 1).padStart(2,'0') + ' / ' + String(sections.length).padStart(2,'0');
-    });
-
-    // ── REVEAL ON SCROLL ──
-    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .step-content');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-      });
-    }, { threshold: 0.12 });
-    revealEls.forEach(el => observer.observe(el));
-
-    // ── COUNTER ANIMATION ──
-    function animateCount(el) {
-      const target = parseInt(el.dataset.target);
-      const special = el.dataset.special;
-      if (special) { el.textContent = special; return; }
-      if (!target) return;
-      const duration = 1800;
-      const start = performance.now();
-      const update = (now) => {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        el.textContent = Math.floor(eased * target).toLocaleString();
-        if (progress < 1) requestAnimationFrame(update);
-        else el.textContent = target.toLocaleString();
-      };
-      requestAnimationFrame(update);
-    }
-
-    const statsBar = document.getElementById('stats-bar');
-    const statObserver = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          document.querySelectorAll('.stat-num').forEach(animateCount);
-          statObserver.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.3 });
-    statObserver.observe(statsBar);
-
-    // ── SMOOTH ANCHOR ──
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        e.preventDefault();
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
-  </script>
+<script>
+/* CURSOR */
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+document.querySelectorAll('a,button,.btn,.svc-card,.oc-card,.ls-card,.tl-step').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='18px';cur.style.height='18px';ring.style.width='56px';ring.style.height='56px';});
+  el.addEventListener('mouseleave',()=>{cur.style.width='10px';cur.style.height='10px';ring.style.width='36px';ring.style.height='36px';});
+});
+/* PROGRESS */
+const prog=document.getElementById('prog');
+window.addEventListener('scroll',()=>{prog.style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';},{passive:true});
+/* NAV */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('stuck',window.scrollY>80),{passive:true});
+/* SECTION INDICATOR */
+const ids=['hero','intro','services','process','outcomes','dtable','nepal','lessons','conclusion','references'];
+const ind=document.getElementById('sec-ind');
+window.addEventListener('scroll',()=>{
+  let c=0;ids.forEach((id,i)=>{const el=document.getElementById(id);if(el&&window.scrollY>=el.offsetTop-250)c=i;});
+  ind.textContent=String(c+1).padStart(2,'0')+' / '+String(ids.length).padStart(2,'0');
+},{passive:true});
+/* REVEAL */
+const ro=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');ro.unobserve(e.target);}});},{threshold:.1});
+document.querySelectorAll('.r,.r-l,.r-r').forEach(el=>ro.observe(el));
+/* COUNT UP */
+function countUp(el,target,dur=2000){
+  const start=performance.now();
+  const update=now=>{const t=Math.min((now-start)/dur,1),ease=1-Math.pow(1-t,4);el.textContent=Math.floor(ease*target).toLocaleString();if(t<1)requestAnimationFrame(update);else el.textContent=target.toLocaleString();};
+  requestAnimationFrame(update);
+}
+/* Hero counts */
+document.querySelectorAll('[data-special]').forEach(el=>el.textContent=el.dataset.special);
+let hFired=false;
+new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting&&!hFired){hFired=true;document.querySelectorAll('[data-count]').forEach(el=>countUp(el,parseInt(el.dataset.count),2200));}});},{threshold:.3}).observe(document.querySelector('.hs-row'));
+/* Big count */
+const bc=document.getElementById('big-count');let bFired=false;
+new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting&&!bFired){bFired=true;countUp(bc,49627,2400);}});},{threshold:.4}).observe(bc);
+/* SMOOTH ANCHORS */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'});});});
+</script>
 </body>
 </html>
